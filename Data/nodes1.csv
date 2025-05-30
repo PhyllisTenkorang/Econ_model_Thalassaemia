@@ -1,0 +1,55 @@
+﻿node_id,type,label
+39,decision,Potential carriers already pregnant
+1,chance,NA
+3,chance,NA
+4,chance,NA
+5,chance,Screen male
+6,chance,NA
+7,chance,Screen male
+8,chance,NA
+9,chance,DNA analysis
+10,chance,NA
+52,leaf,H3
+11,chance,NA
+16,chance,DNA analysis
+12,chance,NA
+58,leaf,H6
+59,leaf,C5
+60,leaf,H7
+13,chance,NA
+61,leaf,H8
+62,leaf,C6
+14,chance,NA
+15,chance,NA
+48,leaf,H1
+49,leaf,C1
+50,leaf,H2
+51,leaf,C2
+53,leaf,H4
+54,leaf,C3
+55,chance,NA
+96,leaf,T3
+97,leaf,C19
+98,leaf,H26
+17,chance,NA
+56,leaf,H5
+57,leaf,C4
+18,chance,NA
+37,chance,NA
+95,leaf,No baby
+42,leaf,T1
+43,leaf,H24
+44,leaf,C17
+38,chance,NA
+45,leaf,T2
+46,leaf,C18
+47,leaf,H25
+2,chance,NA
+63,leaf,H9
+19,chance,NA
+64,leaf,H10
+65,leaf,C7
+20,chance,NA
+66,leaf,H11
+67,leaf,C8
+68,leaf,T4
