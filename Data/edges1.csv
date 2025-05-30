@@ -8,47 +8,47 @@
 5,10,Healthy partner,0.8,1;2
 9,14,High-risk foetus,0.6,3
 9,15,Low-risk foetus,0.4,3
-10,50,NA,0.5,NA
-10,51,NA,0.5,NA
-15,48,NA,0.5,NA
-15,49,NA,0.5,NA
+10,50,,0.5,NA
+10,51,,0.5,NA
+15,48,,0.5,NA
+15,49,,0.5,NA
 14,18,PND,0.7,4
 14,38,No PND,0.3,NA
-38,45,NA,0.25,NA
-38,46,NA,0.5,NA
-38,47,NA,0.25,NA
+38,45,,0.25,NA
+38,46,,0.5,NA
+38,47,,0.25,NA
 18,37,T,0.25,NA
-18,43,NA,0.25,NA
-18,44,NA,0.5,NA
+18,43,,0.25,NA
+18,44,,0.5,NA
 37,95,Abortion,0.67,5
 37,42,No abortion,0.33,NA
 6,52,Healthy partner,0.8,NA
 6,11,Carrier partner,0.2,NA
-11,53,NA,0.5,NA
-11,54,NA,0.5,NA
+11,53,,0.5,NA
+11,54,,0.5,NA
 4,7,Carrier woman,0.2,NA
 4,8,Healthy woman,0.8,NA
 7,16,Carrier partner,0.2,1;2
 7,12,Healthy partner,0.8,1;2
-12,58,NA,0.5,NA
-12,59,NA,0.5,NA
+12,58,,0.5,NA
+12,59,,0.5,NA
 16,55,High-risk foetus,0.6,3
 16,17,Low-risk foetus,0.4,3
-17,56,NA,0.5,NA
-17,57,NA,0.5,NA
-55,96,NA,0.25,NA
-55,97,NA,0.5,NA
-55,98,NA,0.25,NA
+17,56,,0.5,NA
+17,57,,0.5,NA
+55,96,,0.25,NA
+55,97,,0.5,NA
+55,98,,0.25,NA
 8,60,Healthy partner,0.8,NA
 8,13,Carrier partner,0.2,NA
-13,61,NA,0.5,NA
-13,62,NA,0.5,NA
+13,61,,0.5,NA
+13,62,,0.5,NA
 39,2,No further testing,NA,NA
 2,63,Both healthy,0.56,NA
 2,19,One carrier,0.4,NA
 2,20,Both carriers,0.04,NA
-19,64,NA,0.5,NA
-19,65,NA,0.5,NA
-20,66,NA,0.25,NA
-20,67,NA,0.5,NA
-20,68,NA,0.25,NA
+19,64,,0.5,NA
+19,65,,0.5,NA
+20,66,,0.25,NA
+20,67,,0.5,NA
+20,68,,0.25,NA

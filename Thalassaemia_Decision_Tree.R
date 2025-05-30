@@ -62,4 +62,4 @@ decision_tree <- DecisionTree$new(
 )
 
 # Draw the decision tree
-decision_tree$draw(border = TRUE, fontsize = 10)
+decision_tree$draw(border = TRUE, fontsize = 7)
