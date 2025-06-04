@@ -5,6 +5,7 @@ library(readr)        # For reading CSV files
 library(purrr)        # For functional programming tools (e.g., pmap)
 library(rdecision)    # For decision tree classes and methods
 library(stringr)      # For string manipulation
+library(tidyverse)
 
 # Set up data directory and read CSVs
 # Define the directory containing the data files
@@ -14,6 +15,9 @@ data_dir <- "Data/"                                       # Directory containing
 nodes <- read_csv(file.path(data_dir, "nodes1.csv"))      # Node definitions
 edges <- read_csv(file.path(data_dir, "edges1.csv"))      # Edge definitions
 costs <- read_csv(file.path(data_dir, "costs1.csv"))      # Cost definitions
+
+nodes <- nodes %>% 
+  mutate(label = if_else(is.na(label), "", label))
 
 # Create node objects for each row in the nodes data frame
 # Each node is created as a DecisionNode, ChanceNode, or LeafNode based on its type
