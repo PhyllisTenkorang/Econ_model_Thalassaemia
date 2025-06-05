@@ -35,6 +35,9 @@ node_objs <- pmap(
 )
 names(node_objs) <- as.character(nodes$node_id)    # Name the list by node_id for easy lookup
 
+edges <- edges %>% 
+  mutate(action = if_else(is.na(action), "", action))
+
 # Create edge objects (Action or Reaction) for each row in the edges data frame
 Edge_list <- list()
 for (i in 1:nrow(edges)) {
@@ -53,9 +56,8 @@ for (i in 1:nrow(edges)) {
     Edge_list[[i]] <- Action$new(from_node, to_node, cost = cost_action, label = action_label)
   }
   if(grepl("Chance", class(from_node)[1])){
-    Edge_list[[i]] <- Reaction$new(from_node, to_node, cost = 0, label = action_label, p = probability_action)
+    Edge_list[[i]] <- Reaction$new(from_node, to_node, cost = cost_action, label = action_label, p = probability_action)
   }
-  
 }
 
 # Build the decision tree using the node and edge objects
@@ -67,3 +69,7 @@ decision_tree <- DecisionTree$new(
 
 # Draw the decision tree
 decision_tree$draw(border = TRUE, fontsize = 7)
+
+# Evaluate
+es <- decision_tree$evaluate(by = "strategy")
+ep <- decision_tree$evaluate(by = "path")
