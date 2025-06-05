@@ -1,0 +1,8 @@
+node_id,type,label
+1,decision,Programme
+2,chance,Outcome
+3,leaf,No intervention
+4,leaf,Intervention
+5,chance,Outcome
+6,leaf,No intervention
+7,leaf,Intervention
