@@ -55,7 +55,6 @@ for (i in 1:nrow(edges)) {
   if(grepl("Chance", class(from_node)[1])){
     Edge_list[[i]] <- Reaction$new(from_node, to_node, cost = 0, label = action_label, p = probability_action)
   }
-  
 }
 
 # Build the decision tree using the node and edge objects
