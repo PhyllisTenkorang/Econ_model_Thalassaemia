@@ -73,3 +73,5 @@ decision_tree$draw(border = TRUE, fontsize = 7)
 # Evaluate
 es <- decision_tree$evaluate(by = "strategy")
 ep <- decision_tree$evaluate(by = "path")
+
+# Print the evaluation results
