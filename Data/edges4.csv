@@ -1,0 +1,28 @@
+﻿from,to,action,probability,p_distribution,p_params1,p_params2,p_description,cost_id,c_distribution,cost_sd,
+89,90,Screen couple with CBC & Hb typing,NA,,,,,2,Gamma,156,
+90,100,Both non-carriers,0.7056,,,,Probability of both partners not having trait,NA,,,dirichlet
+90,92,One carrier,0.2688,Beta,269,731,Probability of one partner having trait,NA,,,dirichlet
+90,93,Both carriers,0.0256,Beta,26,974,Probability of both partners having trait,3,Gamma,1200,dirichlet
+92,101,NA,0.5,Constant,,,Probability of healthy baby,NA,,,
+92,102,NA,0.5,Constant,,,Probability of carrier baby,NA,,,
+93,94,No reconsideration,0.5,,,,Probability of couple not reconsidering decision to conceive,NA,,,
+93,110,Reconsideration,0.5,Beta,50,50,Probability of couple reconsidering decision to conceive,NA,,,
+94,95,PND,0.58,Beta,58,42,Probability of couple agreeing to PND,4,Gamma,1100,
+95,97,T,0.25,Constant,,,Probability of severe Thalassaemia baby,NA,,,
+95,105,NA,0.5,Constant,,,Probability of carrier baby,NA,,,
+95,106,NA,0.25,Constant,,,Probability of healthy baby,NA,,,
+97,103,No abortion,0.33,,,,Probability of couple not agreeing to abortion,NA,,,
+97,104,Abortion,0.67,Beta,67,33,Probability of couple agreeing to abortion,5,Gamma,600,
+94,96,No PND,0.42,,,,Probability of couple not agreeing to PND,NA,,,
+96,107,NA,0.25,Constant,,,Probability of severe Thalassaemia baby,NA,,,
+96,108,NA,0.5,Constant,,,Probability of carrier baby,NA,,,
+96,109,NA,0.25,Constant,,,Probability of healthy baby,NA,,,
+89,91,No screening,NA,,,,,NA,,,
+91,111,Both non-carriers,0.7056,,,,Probability of both partners not having trait,NA,,,dirichlet
+91,98,One carrier,0.2688,Beta,269,731,Probability of one partner having trait,NA,,,dirichlet
+91,99,Both carriers,0.0256,Beta,26,974,Probability of both partners having trait,NA,,,dirichlet
+98,112,NA,0.5,Constant,,,Probability of healthy baby,NA,,,
+98,113,NA,0.5,Constant,,,Probability of carrier baby,NA,,,
+99,116,NA,0.25,Constant,,,Probability of healthy baby,NA,,,
+99,115,NA,0.5,Constant,,,Probability of carrier baby,NA,,,
+99,114,NA,0.25,Constant,,,Probability of severe Thalassaemia baby,NA,,,

@@ -1,0 +1,21 @@
+﻿from,to,action,probability,p_distribution,p_params1,p_params2,p_description,cost_id,c_distribution,cost_sd,
+68,69,Screen couple with DNA analysis,NA,,,,,3,Gamma,1200,
+69,76,Both non-carriers,0.7056,,,,Probability of both partners not having trait,NA,,,dirichlet
+69,71,One carrier,0.2688,Beta,269,731,Probability of one partner having trait,NA,,,dirichlet
+69,72,Both carriers,0.0256,Beta,26,974,Probability of both partners having trait,NA,,,dirichlet
+71,77,NA,0.5,Constant,,,Probability of healthy baby,NA,,,
+71,78,NA,0.5,Constant,,,Probability of carrier baby,NA,,,
+72,73,No reconsideration,0.5,,,,Probability of couple not reconsidering decision to conceive,NA,,,
+72,82,Reconsideration,0.5,Beta,50,50,Probability of couple reconsidering decision to conceive,NA,,,
+73,79,NA,0.25,Constant,,,Probability of severe Thalassaemia baby,NA,,,
+73,80,NA,0.5,Constant,,,Probability of carrier baby,NA,,,
+73,81,NA,0.25,Constant,,,Probability of healthy baby,NA,,,
+68,70,No screening,NA,,,,,NA,,,
+70,83,Both non-carriers,0.7056,,,,Probability of both partners not having trait,NA,,,dirichlet
+70,74,One carrier,0.2688,Beta,269,731,Probability of one partner having trait,NA,,,dirichlet
+70,75,Both carriers,0.0256,Beta,26,974,Probability of both partners having trait,NA,,,dirichlet
+74,84,NA,0.5,Constant,,,Probability of healthy baby,NA,,,
+74,85,NA,0.5,Constant,,,Probability of carrier baby,NA,,,
+75,86,NA,0.25,Constant,,,Probability of healthy baby,NA,,,
+75,87,NA,0.5,Constant,,,Probability of carrier baby,NA,,,
+75,88,NA,0.25,Constant,,,Probability of severe Thalassaemia baby,NA,,,

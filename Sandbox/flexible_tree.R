@@ -73,7 +73,7 @@ for (i in 1:nrow(edges)) {
       stop()
     }
     
-    Edge_list[[i]] <- Reaction$new(from_node, to_node, cost = 0, label = action_label, p = probability_action)
+    Edge_list[[i]] <- Reaction$new(from_node, to_node, cost = cost_action, label = action_label, p = probability_action)
   }
   
 }

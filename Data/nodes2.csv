@@ -1,0 +1,22 @@
+﻿node_id,type,label
+47,decision,Decision to conceive
+48,chance,
+49,chance,
+50,chance,
+51,chance,DNA analysis
+52,chance,
+53,chance,
+54,chance,
+55,leaf,H13
+56,leaf,H14
+57,leaf,C10
+58,leaf,T5
+59,leaf,C11
+60,leaf,H15
+61,leaf,No baby or alternatives
+62,leaf,H16
+63,leaf,H17
+64,leaf,C12
+65,leaf,H18
+66,leaf,C13
+67,leaf,T6

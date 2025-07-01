@@ -1,0 +1,22 @@
+﻿node_id,type,label
+68,decision,Decision to conceive
+69,chance,
+70,chance,
+71,chance,
+72,chance,
+73,chance,
+74,chance,
+75,chance,
+76,leaf,H19
+77,leaf,H20
+78,leaf,C14
+79,leaf,T7
+80,leaf,C15
+81,leaf,H21
+82,leaf,No baby or alternatives
+83,leaf,H22
+84,leaf,H23
+85,leaf,C16
+86,leaf,H24
+87,leaf,C17
+88,leaf,T8

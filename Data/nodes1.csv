@@ -1,55 +1,47 @@
 ﻿node_id,type,label
-39,decision,Potential carriers already pregnant
-1,chance,
+1,decision,Potential carriers already pregnant
+2,chance,
 3,chance,
 4,chance,
-5,chance,Screen male
-6,chance,
-7,chance,Screen male
-8,chance,
-9,chance,DNA analysis
+5,chance,
+6,chance,Test male
+7,chance,
+8,chance,DNA analysis
+9,chance,
 10,chance,
-52,leaf,H3
 11,chance,
-16,chance,DNA analysis
 12,chance,
-58,leaf,H6
-59,leaf,C5
-60,leaf,H7
 13,chance,
-61,leaf,H8
-62,leaf,C6
-14,chance,
+14,chance,Test male
 15,chance,
-48,leaf,H1
-49,leaf,C1
-50,leaf,H2
-51,leaf,C2
-53,leaf,H4
-54,leaf,C3
-55,chance,
-96,leaf,T3
-97,leaf,C19
-98,leaf,H26
+16,chance,DNA analysis
 17,chance,
-56,leaf,H5
-57,leaf,C4
 18,chance,
-37,chance,
-95,leaf,No baby
-42,leaf,T1
-43,leaf,H24
-44,leaf,C17
-38,chance,
-45,leaf,T2
-46,leaf,C18
-47,leaf,H25
-2,chance,
-63,leaf,H9
 19,chance,
-64,leaf,H10
-65,leaf,C7
 20,chance,
-66,leaf,H11
-67,leaf,C8
-68,leaf,T4
+21,leaf,No baby
+22,leaf,T1
+23,leaf,H1
+24,leaf,C1
+25,leaf,T2
+26,leaf,C2
+27,leaf,H2
+28,leaf,H3
+29,leaf,C3
+30,leaf,H4
+31,leaf,H5
+32,leaf,C4
+33,leaf,T3
+34,leaf,C5
+35,leaf,H6
+36,leaf,H7
+37,leaf,C6
+38,leaf,H8
+39,leaf,H9
+40,leaf,C7
+41,leaf,H10
+42,leaf,H11
+43,leaf,C8
+44,leaf,H12
+45,leaf,C9
+46,leaf,T4

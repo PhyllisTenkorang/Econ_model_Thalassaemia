@@ -1,6 +1,6 @@
-﻿cost_id,intervention,cost
-1,CBC,1000
-2,Hb typing,2000
-3,DNA analysis,10000
-4,PND,8000
-5,abortion,2000
+﻿cost_id,intervention,cost,c_distribution,sd
+1,CBC & Hb typing per person,390,Gamma,78
+2,CBC & Hb typing per couple,780,Gamma,156
+3,DNA analysis per couple,6000,Gamma,1200
+4,PND,5500,Gamma,1100
+5,Abortion,3000,Gamma,600
