@@ -68,7 +68,7 @@ decision_tree <- DecisionTree$new(
 )
 
 # Draw the decision tree
-decision_tree$draw(border = TRUE, fontsize = 10)
+decision_tree$draw(border = TRUE, fontsize = 11)
 
 # Evaluate
 es <- decision_tree$evaluate(by = "strategy")
@@ -139,7 +139,7 @@ decision_tree2 <- DecisionTree$new(
 )
 
 # Draw the decision tree
-decision_tree2$draw(border = TRUE, fontsize = 12)
+decision_tree2$draw(border = TRUE, fontsize = 11.5)
 
 # Evaluate
 es2 <- decision_tree2$evaluate(by = "strategy")
@@ -210,7 +210,7 @@ decision_tree3 <- DecisionTree$new(
 )
 
 # Draw the decision tree
-decision_tree3$draw(border = TRUE, fontsize = 10)
+decision_tree3$draw(border = TRUE, fontsize = 12)
 
 # Evaluate
 es3 <- decision_tree3$evaluate(by = "strategy")
@@ -281,7 +281,7 @@ decision_tree4 <- DecisionTree$new(
 )
 
 # Draw the decision tree
-decision_tree4$draw(border = TRUE, fontsize = 10)
+decision_tree4$draw(border = TRUE, fontsize = 11)
 
 # Evaluate
 es4 <- decision_tree4$evaluate(by = "strategy")
