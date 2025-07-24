@@ -540,8 +540,8 @@ plot_PSA <- function(data, wtp, xlim, ylim){
     geom_point(alpha = 0.5, color = "blue") +  
     geom_abline(intercept = 0, slope = wtp, color = "red", linetype = "dashed", size = 1) + 
     labs(
-      x = "Proportion of severe Thalassaemia cases averted",
-      y = "Incremental costs",
+      x = "Proportion of severe Thalassaemia births averted",
+      y = "Incremental costs (THB)",
       caption = "Red dashed line represents lifetime costs of treatment"
     ) +
     theme_bw(base_size = 13) +
@@ -550,10 +550,10 @@ plot_PSA <- function(data, wtp, xlim, ylim){
   return(G)
 }
 
-plot_PSA(data = psa, wtp = wtp, xlim = 0.015, ylim = 12500)
-plot_PSA(data = psa2, wtp = wtp, xlim = 0.015, ylim = 15000)
-plot_PSA(data = psa3, wtp = wtp, xlim = 0.015, ylim = 25000)
-plot_PSA(data = psa4, wtp = wtp, xlim = 0.015, ylim = 15000)
+plot_PSA(data = psa, wtp = wtp, xlim = 0.010, ylim = 10000)
+plot_PSA(data = psa2, wtp = wtp, xlim = 0.010, ylim = 10000)
+plot_PSA(data = psa3, wtp = wtp, xlim = 0.010, ylim = 10000)
+plot_PSA(data = psa4, wtp = wtp, xlim = 0.010, ylim = 10000)
 
 
 
