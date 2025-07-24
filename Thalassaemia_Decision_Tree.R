@@ -74,6 +74,11 @@ decision_tree$draw(border = TRUE, fontsize = 11)
 es <- decision_tree$evaluate(by = "strategy")
 ep <- decision_tree$evaluate(by = "path")
 
+# ICER
+inc_cost <- es$Cost[2] - es$Cost[1]
+T_averted <- ep$Probability[6] - (ep$Probability[24] + ep$Probability[25] + ep$Probability[26])
+ICER <- inc_cost / T_averted
+
 
 
 ## Pre-conception screening (Option 1)
@@ -144,6 +149,11 @@ decision_tree2$draw(border = TRUE, fontsize = 11.5)
 # Evaluate
 es2 <- decision_tree2$evaluate(by = "strategy")
 ep2 <- decision_tree2$evaluate(by = "path")
+
+# ICER2
+inc_cost2 <- es2$Cost[2] - es2$Cost[1]
+T_averted2 <- ep2$Probability[6] - ep2$Probability[13]
+ICER2 <- inc_cost2 / T_averted2
 
 
 
@@ -216,6 +226,11 @@ decision_tree3$draw(border = TRUE, fontsize = 12)
 es3 <- decision_tree3$evaluate(by = "strategy")
 ep3 <- decision_tree3$evaluate(by = "path")
 
+# ICER3
+inc_cost3 <- es3$Cost[2] - es3$Cost[1]
+T_averted3 <- ep3$Probability[6] - ep3$Probability[13]
+ICER3 <- inc_cost3 / T_averted3
+
 
 
 ## Combination of Pre-conception and Post-conception screening
@@ -286,3 +301,46 @@ decision_tree4$draw(border = TRUE, fontsize = 11)
 # Evaluate
 es4 <- decision_tree4$evaluate(by = "strategy")
 ep4 <- decision_tree4$evaluate(by = "path")
+
+# ICER4
+inc_cost4 <- es4$Cost[2] - es4$Cost[1]
+T_averted4 <- ep4$Probability[6] - (ep4$Probability[16] + ep4$Probability[17])
+ICER4 <- inc_cost4 / T_averted4
+
+
+
+## Presentation on CEA plane
+All_res<-matrix(NA, ncol=3, nrow=4)
+All_res[1,]<-c(inc_cost, T_averted, ICER)
+All_res[2,]<-c(inc_cost2, T_averted2, ICER2)
+All_res[3,]<-c(inc_cost3, T_averted3, ICER3)
+All_res[4,]<-c(inc_cost4, T_averted4, ICER4)
+colnames(All_res)<-c("Incremental Costs", "Proportion of severe Thalassaemia births averted", "ICER")
+rownames(All_res)<-c("Post-conception screening with/without abortion", 
+                     "Pre-conception screening (Option 1)", 
+                     "Pre-conception screening (Option 2)",
+                     "Combination of pre and post-conception screening")
+All_res 
+
+
+## Plot to see CEA results on ICER plane
+
+plot(All_res[,2], All_res[,1], 
+     xlim=c(0, 0.005), ylim=c(0, 8000),
+     ylab="Incremental costs (THB)", 
+     xlab="Proportion of severe Thalassaemia births averted", 
+     pch=20,
+     col=c("black", "blue", "green", "violet"), 
+     main="CEA for Thalassaemia screening strategies in Thailand", 
+     cex.main=1.5, cex.lab=1.2, cex.axis=1.1)
+text(All_res[,2], All_res[,1],
+     labels=c("Post-conception","Pre-conception 1", "Pre-conception 2", "Combination"), 
+     cex=0.9, pos=3, col="black")
+abline(a=0, b=677206, lty=1.5, col='red')  # CET
+grid()
+legend("topright", 
+       legend = c("CET - Lifetime cost of managing severe Thalassaemia"),
+       col = c("red"), 
+       lty = 1.5)
+
+
