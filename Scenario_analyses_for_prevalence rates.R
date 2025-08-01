@@ -2,66 +2,37 @@
 
 # Load required libraries
 library(rdecision)
-library(ggplot2)
 
 #Costs
-cost_CBC_Hb <- GammaModVar$new(
-  "CBC & Hb typing cost per person", "THB",
-  shape = (390 ^ 2L) / (78 ^ 2L),
-  scale = (78 ^ 2L) / 390)
+cost_CBC_Hb <- 390
 
-cost_CBC_Hb2 <- GammaModVar$new(
-  "CBC & Hb typing cost per couple", "THB",
-  shape = (780 ^ 2L) / (156 ^ 2L),
-  scale = (156 ^ 2L) / 780)
+cost_CBC_Hb2 <- 780
 
-cost_DNA_analysis <- GammaModVar$new(
-  "DNA analysis cost", "THB",
-  shape = (6000 ^ 2L) / (1200 ^ 2L),
-  scale = (1200 ^ 2L) / 6000)
+cost_DNA_analysis <- 6000
 
-cost_PND <- GammaModVar$new(
-  "PND cost", "THB",
-  shape = (5500 ^ 2L) / (1100 ^ 2L),
-  scale = (1100 ^ 2L) / 5500)
+cost_PND <- 5500
 
-cost_abortion <- GammaModVar$new(
-  "Abortion cost", "THB",
-  shape = (3000 ^ 2L) / (600 ^ 2L),
-  scale = (600 ^ 2L) / 3000)
+cost_abortion <- 3000
 
 
 # Probabilties
-p_early_presentation <- BetaModVar$new(
-  "Probability of early presentation", "", alpha = 80, beta = 20)
+p_early_presentation <- 0.8
 
-p_thalassaemia_trait_W <- BetaModVar$new(
-  "Probability of woman having trait", "", alpha = 160, beta = 840)
+p_thalassaemia_trait_W <- 0.10
 
-p_thalassaemia_trait_M <- BetaModVar$new(
-  "Probability of man having trait", "", alpha = 160, beta = 840)
+p_thalassaemia_trait_M <- 0.10
 
-p_one_partner_trait <- BetaModVar$new(
-  "Probability of one partner having trait", "", alpha = 269, beta = 731)
+p_one_partner_trait <- 0.18
 
-p_both_partners_trait <- BetaModVar$new(
-  "Probability of both partners having trait", "", alpha = 26, beta = 974)
+p_both_partners_trait <- 0.01
 
-p_both_partners_healthy <- ExprModVar$new(
-  "Probability of both partners not having trait", "", 
-  rlang::quo((1-p_one_partner_trait) - p_both_partners_trait))
+p_both_partners_healthy <- 0.81
 
-p_PND <- BetaModVar$new(
-  "Probability of couple agreeing to PND", "", 
-  alpha = 58, beta = 42)
+p_PND <- 0.58
 
-p_abortion <- BetaModVar$new(
-  "Probability of couple agreeing to abortion", "", 
-  alpha = 67, beta = 33)
+p_abortion <- 0.67
 
-p_reconsideration <- BetaModVar$new(
-  "Probability of couple reconsidering decision to conceive", "", 
-  alpha = 50, beta = 50)
+p_reconsideration <- 0.50
 
 p_C <- 0.50                          # probability of carrier baby
 p_T <- 0.25                          # probability of severe thalassaemia baby
@@ -100,7 +71,7 @@ c8 <- ChanceNode$new("DNA analysis")
 e9 <- Reaction$new(c8, c11, p = p_PND, cost = cost_PND,
                    label = "PND")
 e10 <- Reaction$new(c8, c12, p = NA_real_, cost = 0.0,
-                    label = "No PND")
+                   label = "No PND")
 
 th <- LeafNode$new("H3", utility = 1.0)
 ti <- LeafNode$new("C3", utility = 1.0)
@@ -224,16 +195,23 @@ dt <- DecisionTree$new(V, E)
 es <- dt$evaluate(by = "strategy")
 ep <- dt$evaluate(by = "path")
 
-# Probabilistic sensitivity analysis
-N <- 1000L
-psa <- dt$evaluate(setvars = "random", by = "run", N = N)
-psa[ , "delta_cost"] <- psa[ , "Cost.Test woman"] - psa[ , "Cost.No further testing"]
-psa[ , "delta_utility"] <- psa[ , "Utility.Test woman"] - psa[ , "Utility.No further testing"]
-psa[, "ICER"] <- psa[ , "delta_cost"] / psa[ , "delta_utility"]
+# ICER
+inc_cost <- es$Cost[2] - es$Cost[1]
+T_averted <- ep$Probability[6] - (ep$Probability[24] + ep$Probability[25] + ep$Probability[26])
+ICER <- inc_cost / T_averted
 
 
 
 ## Decision Tree for proposed pre-conception screening (Option 1)
+p_thalassaemia_trait_W <- 0.10
+
+p_thalassaemia_trait_M <- 0.10
+
+p_one_partner_trait <- 0.18
+
+p_both_partners_trait <- 0.01
+
+p_both_partners_healthy <- 0.81
 
 # Define branch for pre-conception screening
 t1 <- LeafNode$new("T5", utility = 0.0)
@@ -313,119 +291,32 @@ dt2 <- DecisionTree$new(V, E)
 es2 <- dt2$evaluate(by = "strategy")
 ep2 <- dt2$evaluate(by = "path")
 
-# Probabilistic sensitivity analysis
-N <- 1000L
-psa2 <- dt2$evaluate(setvars = "random", by = "run", N = N)
-psa2[ , "delta_cost"] <- psa2[ , "Cost.Screen couple with \nCBC + Hb typing"] - 
-  psa2[ , "Cost.No screening"]
-psa2[ , "delta_utility"] <- psa2[ , "Utility.Screen couple with \nCBC + Hb typing"] - 
-  psa2[ , "Utility.No screening"]
-psa2[, "ICER"] <- psa2[ , "delta_cost"] / psa2[ , "delta_utility"]
-
-
-
-## Decision Tree for proposed pre-conception screening (Option 2)
-
-# Define branch for pre-conception screening
-t14 <- LeafNode$new("T7", utility = 0.0)
-t15 <- LeafNode$new("C15", utility = 1.0)
-t16 <- LeafNode$new("H21", utility = 1.0)
-c73 <- ChanceNode$new()
-e66 <- Reaction$new(c73, t14, p = p_T)
-e67 <- Reaction$new(c73, t15, p = p_C)
-e68 <- Reaction$new(c73, t16, p = NA_real_)
-
-t17 <- LeafNode$new("No baby or alternatives", utility = 1.0)
-c72 <- ChanceNode$new()
-e69 <- Reaction$new(c72, t17, p = p_reconsideration,
-                    label = "Reconsideration")
-e70 <- Reaction$new(c72, c73, p = NA_real_,
-                    label = "No Reconsideration")
-
-t18 <- LeafNode$new("H20", utility = 1.0)
-t19 <- LeafNode$new("C14", utility = 1.0)
-c71 <- ChanceNode$new()
-e71 <- Reaction$new(c71, t18, p = NA_real_)
-e72 <- Reaction$new(c71, t19, p = p_C)
-
-t20 <- LeafNode$new("H19", utility = 1.0)
-c69 <- ChanceNode$new()
-e73 <- Reaction$new(c69, t20, p = p_both_partners_healthy, 
-                    label = "Both non-carriers")
-e74 <- Reaction$new(c69, c71, p = p_one_partner_trait, 
-                    label = "One carrier")
-e75 <- Reaction$new(c69, c72, p = p_both_partners_trait, 
-                    label = "Both carriers")
-
-# Define branch for no pre-conception screening
-t21 <- LeafNode$new("H23", utility = 1.0)
-t22 <- LeafNode$new("C16", utility = 1.0)
-c74 <- ChanceNode$new()
-e76 <- Reaction$new(c74, t21, p = NA_real_)
-e77 <- Reaction$new(c74, t22, p = p_C)
-
-t23 <- LeafNode$new("H24", utility = 1.0)
-t24 <- LeafNode$new("C17", utility = 1.0)
-t25 <- LeafNode$new("T8", utility = 0.0)
-c75 <- ChanceNode$new()
-e78 <- Reaction$new(c75, t23, p = NA_real_)
-e79 <- Reaction$new(c75, t24, p = p_C)
-e80 <- Reaction$new(c75, t25, p = p_T)
-
-t26 <- LeafNode$new("H22", utility = 1.0)
-c70 <- ChanceNode$new()
-e81 <- Reaction$new(c70, t26, p = p_both_partners_healthy, 
-                    label = "Both non-carriers")
-e82 <- Reaction$new(c70, c74, p = p_one_partner_trait,
-                    label = "One carrier")
-e83 <- Reaction$new(c70, c75, p = p_both_partners_trait,
-                    label = "Both carriers")
-
-# Define decision node
-d3 <- DecisionNode$new("Decision to conceive")
-e84 <- Action$new(d3, c69, cost = cost_DNA_analysis,
-                  label = "Screen couple with \nDNA analysis")
-e85 <- Action$new(d3, c70, cost = 0,
-                  label = "No screening")
-
-# Create lists of nodes and edges
-V <- list(
-  d3, c69, c70, c71, c72, c73, c74, c75,
-  t14, t15, t16, t17, t18, t19, t20, 
-  t21, t22, t23, t24, t25, t26)
-
-E <- list(
-  e66, e67, e68, e69, e70, e71, e72, e73, e74, e75,
-  e76, e77, e78, e79, e80, e81, e82, e83, e84, e85)
-
-# Create and draw the decision tree
-dt3 <- DecisionTree$new(V, E)
-
-# Evaluate
-es3 <- dt3$evaluate(by = "strategy")
-ep3 <- dt3$evaluate(by = "path")
-
-# Probabilistic sensitivity analysis
-N <- 1000L
-psa3 <- dt3$evaluate(setvars = "random", by = "run", N = N)
-psa3[ , "delta_cost"] <- psa3[ , "Cost.Screen couple with \nDNA analysis"] - 
-  psa3[ , "Cost.No screening"]
-psa3[ , "delta_utility"] <- psa3[ , "Utility.Screen couple with \nDNA analysis"] - 
-  psa3[ , "Utility.No screening"]
-psa3[, "ICER"] <- psa3[ , "delta_cost"] / psa3[ , "delta_utility"]
+# ICER2
+inc_cost2 <- es2$Cost[2] - es2$Cost[1]
+T_averted2 <- ep2$Probability[6] - ep2$Probability[13]
+ICER2 <- inc_cost2 / T_averted2
 
 
 
 ## Decision Tree for a combination of pre and post-conception screening
+p_thalassaemia_trait_W <- 0.085
+
+p_thalassaemia_trait_M <- 0.085
+
+p_one_partner_trait <- 0.15555
+
+p_both_partners_trait <- 0.007225
+
+p_both_partners_healthy <- 0.837225
 
 # Define branch for screening
 t27 <- LeafNode$new("No baby", utility = 1.0)
 t28 <- LeafNode$new("T9", utility = 0.0)
 c97 <- ChanceNode$new()
 e86 <- Reaction$new(c97, t27, p = p_abortion, cost_abortion,
-                    label = "Abortion")
+                     label = "Abortion")
 e87 <- Reaction$new(c97, t28, p = NA_real_, cost = 0.0,
-                    label = "No Abortion")
+                     label = "No Abortion")
 
 t29 <- LeafNode$new("C19", utility = 1.0)
 t30 <- LeafNode$new("H27", utility = 1.0)
@@ -444,16 +335,16 @@ e93 <- Reaction$new(c96, t33, p = NA_real_)
 
 c94 <- ChanceNode$new("Pregnant")
 e94 <- Reaction$new(c94, c96, p = NA_real_, cost = 0.0,
-                    label = "No PND")
+                     label = "No PND")
 e95 <- Reaction$new(c94, c95, p = p_PND, cost = cost_PND,
-                    label = "PND")
+                     label = "PND")
 
 t34 <- LeafNode$new("No baby or alternatives", utility = 1.0)
 c93 <- ChanceNode$new("DNA analysis")
 e96 <- Reaction$new(c93, t34, p = p_reconsideration,
-                    label = "Reconsideration")
+                     label = "Reconsideration")
 e97 <- Reaction$new(c93, c94, p = NA_real_,
-                    label = "No Reconsideration")
+                     label = "No Reconsideration")
 
 t35 <- LeafNode$new("H26", utility = 1.0)
 t36 <- LeafNode$new("C18", utility = 1.0)
@@ -519,63 +410,10 @@ dt4 <- DecisionTree$new(V, E)
 es4 <- dt4$evaluate(by = "strategy")
 ep4 <- dt4$evaluate(by = "path")
 
-# Probabilistic sensitivity analysis
-N <- 1000L
-psa4 <- dt4$evaluate(setvars = "random", by = "run", N = N)
-psa4[ , "delta_cost"] <- psa4[ , "Cost.Screen couple with \nCBC + Hb typing"] - 
-  psa4[ , "Cost.No screening"]
-psa4[ , "delta_utility"] <- psa4[ , "Utility.Screen couple with \nCBC + Hb typing"] - 
-  psa4[ , "Utility.No screening"]
-psa4[, "ICER"] <- psa4[ , "delta_cost"] / psa4[ , "delta_utility"]
-
-
-# PSA on Cost-Effectiveness Plane
-
-## Define WTP threshold
-wtp <- 677205.9772
-
-plot_PSA <- function(data, wtp, xlim, ylim){
-  
-  G <- ggplot(data, aes(x = delta_utility, y = delta_cost)) +
-    geom_point(alpha = 0.5, color = "blue") +  
-    geom_abline(intercept = 0, slope = wtp, color = "red", linetype = "dashed", size = 1) + 
-    labs(
-      x = "Proportion of severe thalassaemia births averted",
-      y = "Incremental costs (THB)",
-      caption = "Red dashed line represents lifetime cost of managing a patient with 
-      severe thalassaemia"
-    ) +
-    theme_bw(base_size = 13) +
-    scale_x_continuous(limits = c(0, xlim), expand = c(0,0))+
-    scale_y_continuous(limits = c(0, ylim), expand = c(0,0)) 
-  return(G)
-}
-
-plot_PSA(data = psa, wtp = wtp, xlim = 0.010, ylim = 10000)
-plot_PSA(data = psa2, wtp = wtp, xlim = 0.010, ylim = 10000)
-plot_PSA(data = psa3, wtp = wtp, xlim = 0.010, ylim = 10000)
-plot_PSA(data = psa4, wtp = wtp, xlim = 0.010, ylim = 10000)
-
-## Proportion of PSA simulations above wtp
-mean(psa$ICER > wtp, na.rm = TRUE)
-mean(psa2$ICER > wtp, na.rm = TRUE)
-mean(psa3$ICER > wtp, na.rm = TRUE)
-mean(psa4$ICER > wtp, na.rm = TRUE)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# ICER4
+inc_cost4 <- es4$Cost[2] - es4$Cost[1]
+T_averted4 <- ep4$Probability[6] - (ep4$Probability[16] + ep4$Probability[17])
+ICER4 <- inc_cost4 / T_averted4
 
 
 

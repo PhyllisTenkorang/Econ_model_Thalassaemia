@@ -331,7 +331,7 @@ plot(All_res[,2], All_res[,1],
      xlab="Proportion of severe Thalassaemia births averted", 
      pch=20,
      col=c("black", "blue", "green", "violet"), 
-     main="CEA for Thalassaemia screening strategies in Thailand", 
+     main="CEA of thalassaemia screening strategies versus no screening in Thailand", 
      cex.main=1.5, cex.lab=1.2, cex.axis=1.1)
 text(All_res[,2], All_res[,1],
      labels=c("Post-conception","Pre-conception 1", "Pre-conception 2", "Combination"), 
