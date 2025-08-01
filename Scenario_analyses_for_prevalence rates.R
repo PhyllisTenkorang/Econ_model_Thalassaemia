@@ -298,6 +298,103 @@ ICER2 <- inc_cost2 / T_averted2
 
 
 
+## Decision Tree for proposed pre-conception screening (Option 2)
+p_thalassaemia_trait_W <- 0.27
+
+p_thalassaemia_trait_M <- 0.27
+
+p_one_partner_trait <- 0.3942
+
+p_both_partners_trait <- 0.0729
+
+p_both_partners_healthy <- 0.5329
+
+# Define branch for pre-conception screening
+t14 <- LeafNode$new("T7", utility = 0.0)
+t15 <- LeafNode$new("C15", utility = 1.0)
+t16 <- LeafNode$new("H21", utility = 1.0)
+c73 <- ChanceNode$new()
+e66 <- Reaction$new(c73, t14, p = p_T)
+e67 <- Reaction$new(c73, t15, p = p_C)
+e68 <- Reaction$new(c73, t16, p = NA_real_)
+
+t17 <- LeafNode$new("No baby or alternatives", utility = 1.0)
+c72 <- ChanceNode$new()
+e69 <- Reaction$new(c72, t17, p = p_reconsideration,
+                    label = "Reconsideration")
+e70 <- Reaction$new(c72, c73, p = NA_real_,
+                    label = "No Reconsideration")
+
+t18 <- LeafNode$new("H20", utility = 1.0)
+t19 <- LeafNode$new("C14", utility = 1.0)
+c71 <- ChanceNode$new()
+e71 <- Reaction$new(c71, t18, p = NA_real_)
+e72 <- Reaction$new(c71, t19, p = p_C)
+
+t20 <- LeafNode$new("H19", utility = 1.0)
+c69 <- ChanceNode$new()
+e73 <- Reaction$new(c69, t20, p = p_both_partners_healthy, 
+                    label = "Both non-carriers")
+e74 <- Reaction$new(c69, c71, p = p_one_partner_trait, 
+                    label = "One carrier")
+e75 <- Reaction$new(c69, c72, p = p_both_partners_trait, 
+                    label = "Both carriers")
+
+# Define branch for no pre-conception screening
+t21 <- LeafNode$new("H23", utility = 1.0)
+t22 <- LeafNode$new("C16", utility = 1.0)
+c74 <- ChanceNode$new()
+e76 <- Reaction$new(c74, t21, p = NA_real_)
+e77 <- Reaction$new(c74, t22, p = p_C)
+
+t23 <- LeafNode$new("H24", utility = 1.0)
+t24 <- LeafNode$new("C17", utility = 1.0)
+t25 <- LeafNode$new("T8", utility = 0.0)
+c75 <- ChanceNode$new()
+e78 <- Reaction$new(c75, t23, p = NA_real_)
+e79 <- Reaction$new(c75, t24, p = p_C)
+e80 <- Reaction$new(c75, t25, p = p_T)
+
+t26 <- LeafNode$new("H22", utility = 1.0)
+c70 <- ChanceNode$new()
+e81 <- Reaction$new(c70, t26, p = p_both_partners_healthy, 
+                    label = "Both non-carriers")
+e82 <- Reaction$new(c70, c74, p = p_one_partner_trait,
+                    label = "One carrier")
+e83 <- Reaction$new(c70, c75, p = p_both_partners_trait,
+                    label = "Both carriers")
+
+# Define decision node
+d3 <- DecisionNode$new("Decision to conceive")
+e84 <- Action$new(d3, c69, cost = cost_DNA_analysis,
+                  label = "Screen couple with \nDNA analysis")
+e85 <- Action$new(d3, c70, cost = 0,
+                  label = "No screening")
+
+# Create lists of nodes and edges
+V <- list(
+  d3, c69, c70, c71, c72, c73, c74, c75,
+  t14, t15, t16, t17, t18, t19, t20, 
+  t21, t22, t23, t24, t25, t26)
+
+E <- list(
+  e66, e67, e68, e69, e70, e71, e72, e73, e74, e75,
+  e76, e77, e78, e79, e80, e81, e82, e83, e84, e85)
+
+# Create and draw the decision tree
+dt3 <- DecisionTree$new(V, E)
+
+# Evaluate
+es3 <- dt3$evaluate(by = "strategy")
+ep3 <- dt3$evaluate(by = "path")
+
+# ICER3
+inc_cost3 <- es3$Cost[2] - es3$Cost[1]
+T_averted3 <- ep3$Probability[6] - ep3$Probability[13]
+ICER3 <- inc_cost3 / T_averted3
+
+
+
 ## Decision Tree for a combination of pre and post-conception screening
 p_thalassaemia_trait_W <- 0.085
 
