@@ -2,7 +2,11 @@
 
 # Load required libraries
 library(rdecision)
-library(ggplot2)
+library(tidyverse)
+library(scales)
+library(here)
+
+source("plot_functions.R")
 
 #Costs
 cost_CBC_Hb <- GammaModVar$new(
@@ -69,9 +73,9 @@ T <- "Severe Thalassaemia baby"
 H <- "Non-carier baby"
 C <- "Carrier baby"
 
-# Decision Tree for post-conception screening
+# Decision Tree for post-conception screening (Strategy 1)
 
-# Define the post-conception screening branch
+# Define the post-conception screening branch 
 ta <- LeafNode$new("No baby", utility = 1.0)
 tb <- LeafNode$new("T1", utility = 0.0)
 c13 <- ChanceNode$new()
@@ -223,6 +227,11 @@ ep <- dt$evaluate(by = "path")
 
 # One-way sensitivity analysis
 dt$tornado(index = e44, ref = e45, outcome = "ICER", draw = TRUE)
+tornado_S1 <- plot_tornado_labeled(dt, e44, e45, outcome = "ICER",
+                     Label = "\nStrategy 1: Post-conception screening",
+                     xmax = 500000, xmin = 100000)
+tornado_S1
+
 
 # Threshold analysis
 dt$threshold(
@@ -273,7 +282,7 @@ dt$threshold(
   nmax = 1000L
 )
 
-## Decision Tree for proposed pre-conception screening (Option 1)
+## Decision Tree for proposed pre-conception screening (Strategy 2)
 
 # Define branch for pre-conception screening
 t1 <- LeafNode$new("T5", utility = 0.0)
@@ -354,7 +363,10 @@ es2 <- dt2$evaluate(by = "strategy")
 ep2 <- dt2$evaluate(by = "path")
 
 dt2$tornado(index = e64, ref = e65, outcome = "ICER", draw = TRUE)
-
+tornado_S2 <- plot_tornado_labeled(dt2, e64, e65, outcome = "ICER",
+                      Label = "Strategy 2: Pre-conception screening\nwith targeted DNA analysis",
+                      xmax = 500000, xmin = 50000)
+tornado_S2
 #Threshold analysis
 dt2$threshold(
   index = e64,
@@ -394,7 +406,7 @@ dt2$threshold(
 
 
 
-## Decision Tree for proposed pre-conception screening (Option 2)
+## Decision Tree for proposed pre-conception screening (Strategy 3)
 
 # Define branch for pre-conception screening
 t14 <- LeafNode$new("T7", utility = 0.0)
@@ -476,7 +488,11 @@ es3 <- dt3$evaluate(by = "strategy")
 ep3 <- dt3$evaluate(by = "path")
 
 dt3$tornado(index = e84, ref = e85, outcome = "ICER", draw = TRUE)
- 
+tornado_S3 <- plot_tornado_labeled(dt3, e84, e85, outcome = "ICER",
+                      Label = "Strategy 3: Pre-conception screening \nwith universal DNA analysis",
+                      xmax = 3000000, xmin = 500000) 
+tornado_S3
+
 dt3$threshold(
   index = e84,
   ref = e85,
@@ -491,7 +507,7 @@ dt3$threshold(
 
 
 
-## Decision Tree for a combination of pre and post-conception screening +/- abortion
+## Decision Tree for a combination of pre and post-conception screening +/- abortion (Strategy 4)
 
 # Define branch for screening
 t27 <- LeafNode$new("No baby", utility = 1.0)
@@ -595,35 +611,52 @@ es4 <- dt4$evaluate(by = "strategy")
 ep4 <- dt4$evaluate(by = "path")
 
 dt4$tornado(index = e111, ref = e112, outcome = "ICER", draw = TRUE)
+tornado_S4 <- plot_tornado_labeled(dt4, e111, e112, outcome = "ICER",
+                      Label = "Strategy 4: Combination of \npre- and post-conception screening",
+                      xmax = 350000, xmin = 50000)
+tornado_S4
 
 # Threshold analysis
-dt4$threshold(
-  index = e111,
-  ref = e112,
-  outcome = "ICER",
-  mvd = "Probability of couple reconsidering decision to conceive",
-  a = 0,
-  b = 1.00,
-  tol = 0.00000001,
-  lambda = 677205.9772,
-  nmax = 1000L
-)
+# dt4$threshold(
+#   index = e111,
+#   ref = e112,
+#   outcome = "ICER",
+#   mvd = "Probability of couple reconsidering decision to conceive",
+#   a = 0,
+#   b = 1.00,
+#   tol = 0.00000001,
+#   lambda = 677205.9772,
+#   nmax = 1000L
+# )
 
-dt4$threshold(
-  index = e111,
-  ref = e112,
-  outcome = "ICER",
-  mvd = "DNA analysis cost",
-  a = 50,
-  b = 100000,
-  tol = 0.01,
-  lambda = 677205.9772,
-  nmax = 1000L
-)
-
-
+# dt4$threshold(
+#   index = e111,
+#   ref = e112,
+#   outcome = "ICER",
+#   mvd = "DNA analysis cost",
+#   a = 50,
+#   b = 100000,
+#   tol = 0.01,
+#   lambda = 677205.9772,
+#   nmax = 1000L
+# )
 
 
+
+# Combine tornado plots for all strategies
+library(ggpubr)
+combined_tornado <- ggarrange(tornado_S1, tornado_S2,
+                              tornado_S3, tornado_S4,
+                              ncol = 2, nrow = 2, align = "hv")
+combined_tornado
+# Save the combined tornado plot
+pdf(here("Plots","combined_tornado_plots.pdf"), width = 18, height = 12)
+print(combined_tornado)
+dev.off()
+
+png(here("Plots","combined_tornado_plots.png"), width = 14, height = 11, units = "in", res = 350)
+print(combined_tornado)
+dev.off()
 
 
 
