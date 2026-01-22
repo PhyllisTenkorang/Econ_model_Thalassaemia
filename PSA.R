@@ -551,6 +551,7 @@ plot_PSA <- function(data, wtp, xlim, ylim){
   return(G)
 }
 
+
 plot_PSA(data = psa, wtp = wtp, xlim = 0.010, ylim = 10000)
 plot_PSA(data = psa2, wtp = wtp, xlim = 0.010, ylim = 10000)
 plot_PSA(data = psa3, wtp = wtp, xlim = 0.010, ylim = 10000)
@@ -561,6 +562,65 @@ mean(psa$ICER > wtp, na.rm = TRUE)
 mean(psa2$ICER > wtp, na.rm = TRUE)
 mean(psa3$ICER > wtp, na.rm = TRUE)
 mean(psa4$ICER > wtp, na.rm = TRUE)
+
+
+library(tidyverse)
+library(scales)
+
+psa_combined <- bind_rows(
+  psa  |> select(delta_cost, delta_utility) |> mutate(strategy = "Strategy 1"),
+  psa2 |> select(delta_cost, delta_utility) |> mutate(strategy = "Strategy 2"),
+  psa3 |> select(delta_cost, delta_utility) |> mutate(strategy = "Strategy 3"),
+  psa4 |> select(delta_cost, delta_utility) |> mutate(strategy = "Strategy 4")
+)
+
+wtp <- 677205.9772
+medians <- psa_combined %>%
+  group_by(strategy) %>%
+  summarise(
+    med_cost = median(delta_cost),
+    med_eff  = median(delta_utility)
+  )
+
+
+prof_colors <- c("#EA5B6F", "#F79A19", "#3338A0", "#9112BC")
+
+strategy_labels <- c(
+  "Strategy 1" = "Strategy 1: Post-conception", 
+  "Strategy 2" = "Strategy 2: Pre-conception, targeted", 
+  "Strategy 3" = "Strategy 3: Pre-conception, universal", 
+  "Strategy 4" = "Strategy 4: Combined screening"
+)
+
+PSA_plot <- ggplot(psa_combined, aes(x = delta_utility, y = delta_cost, color = strategy)) +
+  geom_point(size = 2, alpha = 0.2) + 
+  stat_ellipse(type = "norm", level = 0.8, size = 0.7) +  
+  geom_point(data = medians, aes(x = med_eff, y = med_cost, fill = strategy), 
+             size = 5, shape = 21, color = "white", stroke = 1.2) +
+  geom_abline(intercept = 0, slope = wtp, color = "gray30", 
+              linetype = "31", size = 1, alpha = 0.8) +   
+  scale_color_manual(values = prof_colors, labels = strategy_labels, name = "") +
+  scale_fill_manual(values = prof_colors, labels = strategy_labels, name = "") +
+  scale_x_continuous(labels = function(x) comma(x * 1000), expand = c(0.02, 0)) +
+  scale_y_continuous(labels = label_comma(), expand = c(0.02, 0), limits = c(0,12000)) +
+  theme_bw(base_size = 18) +
+  labs(
+    x = "Severe thalassaemia births averted per 1,000 screened",
+    y = "Incremental cost (THB)") +
+  theme(legend.position = "bottom",
+        legend.text = element_text(size = 14)) +
+  # Force the legend into two columns
+  guides(
+    color = guide_legend(ncol = 2),
+    fill = guide_legend(ncol = 2)
+  )
+
+# Save the plot with specified dimensions and resolution
+png(here("Plots","PSA_scatter_plot.png"), width = 10, height = 8, units = "in", res = 350)
+print(PSA_plot)
+dev.off()
+
+
 
 
 
