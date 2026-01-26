@@ -530,51 +530,79 @@ psa4[, "ICER"] <- psa4[ , "delta_cost"] / psa4[ , "delta_utility"]
 
 
 # PSA on Cost-Effectiveness Plane
+source("functions.R")
+
 
 ## Define WTP threshold
-wtp <- 677205.9772
+exchange_rate_2005 <- 40.22  # Example exchange rate USD to THB in 2005
+inflation_rate_thb <- 164.8/111.2  # 2005 to 2023 average inflation rate in Thailand (World Bank GDP deflator)
+discount_rate <- 0.03  # 3% discount rate
+years <- 30  # Lifetime in years
 
-plot_PSA <- function(data, wtp, xlim, ylim){
+wtp_base <- calculate_lifetime_cost(cost_usd_2005 = 562.76,
+                                    exchange_rate = exchange_rate_2005,
+                                    inflation_rate = inflation_rate_thb,
+                                    discount_rate = discount_rate,
+                                    years = years)
+
+wtp_low <- calculate_lifetime_cost(cost_usd_2005 = 224.90,
+                                    exchange_rate = exchange_rate_2005,
+                                    inflation_rate = inflation_rate_thb,
+                                    discount_rate = discount_rate,
+                                    years = years)
+
+wtp_high <- calculate_lifetime_cost(cost_usd_2005 = 782.70,
+                                    exchange_rate = exchange_rate_2005,
+                                    inflation_rate = inflation_rate_thb,
+                                    discount_rate = discount_rate,
+                                    years = years)
+
+wtp <- list(
+  low = wtp_low,
+  base = wtp_base,
+  high = wtp_high
+)
+
+# plot_PSA <- function(data, wtp, xlim, ylim){
   
-  G <- ggplot(data, aes(x = delta_utility, y = delta_cost)) +
-    geom_point(alpha = 0.5, color = "blue") +  
-    geom_abline(intercept = 0, slope = wtp, color = "red", linetype = "dashed", size = 1) + 
-    labs(
-      x = "Proportion of severe thalassaemia births averted",
-      y = "Incremental costs (THB)",
-      caption = "Red dashed line represents lifetime cost of managing a patient with 
-      severe thalassaemia"
-    ) +
-    theme_bw(base_size = 13) +
-    scale_x_continuous(limits = c(0, xlim), expand = c(0,0))+
-    scale_y_continuous(limits = c(0, ylim), expand = c(0,0)) 
-  return(G)
-}
+#   G <- ggplot(data, aes(x = delta_utility, y = delta_cost)) +
+#     geom_point(alpha = 0.5, color = "blue") +  
+#     geom_abline(intercept = 0, slope = wtp$base, color = "red", linetype = "dashed", size = 1) + 
+#     labs(
+#       x = "Proportion of severe thalassaemia births averted",
+#       y = "Incremental costs (THB)",
+#       caption = "Red dashed line represents lifetime cost of managing a patient with 
+#       severe thalassaemia"
+#     ) +
+#     theme_bw(base_size = 13) +
+#     scale_x_continuous(limits = c(0, xlim), expand = c(0,0))+
+#     scale_y_continuous(limits = c(0, ylim), expand = c(0,0)) 
+#   return(G)
+# }
 
 
-plot_PSA(data = psa, wtp = wtp, xlim = 0.010, ylim = 10000)
-plot_PSA(data = psa2, wtp = wtp, xlim = 0.010, ylim = 10000)
-plot_PSA(data = psa3, wtp = wtp, xlim = 0.010, ylim = 10000)
-plot_PSA(data = psa4, wtp = wtp, xlim = 0.010, ylim = 10000)
+# plot_PSA(data = psa, wtp = wtp, xlim = 0.010, ylim = 10000)
+# plot_PSA(data = psa2, wtp = wtp, xlim = 0.010, ylim = 10000)
+# plot_PSA(data = psa3, wtp = wtp, xlim = 0.010, ylim = 10000)
+# plot_PSA(data = psa4, wtp = wtp, xlim = 0.010, ylim = 10000)
 
 ## Proportion of PSA simulations above wtp
-mean(psa$ICER > wtp, na.rm = TRUE)
-mean(psa2$ICER > wtp, na.rm = TRUE)
-mean(psa3$ICER > wtp, na.rm = TRUE)
-mean(psa4$ICER > wtp, na.rm = TRUE)
+# mean(psa$ICER > wtp, na.rm = TRUE)
+# mean(psa2$ICER > wtp, na.rm = TRUE)
+# mean(psa3$ICER > wtp, na.rm = TRUE)
+# mean(psa4$ICER > wtp, na.rm = TRUE)
 
 
 library(tidyverse)
 library(scales)
 
 psa_combined <- bind_rows(
-  psa  |> select(delta_cost, delta_utility) |> mutate(strategy = "Strategy 1"),
-  psa2 |> select(delta_cost, delta_utility) |> mutate(strategy = "Strategy 2"),
-  psa3 |> select(delta_cost, delta_utility) |> mutate(strategy = "Strategy 3"),
-  psa4 |> select(delta_cost, delta_utility) |> mutate(strategy = "Strategy 4")
+  psa  |> select(delta_cost, delta_utility, ICER) |> mutate(strategy = "Strategy 1"),
+  psa2 |> select(delta_cost, delta_utility, ICER) |> mutate(strategy = "Strategy 2"),
+  psa3 |> select(delta_cost, delta_utility, ICER) |> mutate(strategy = "Strategy 3"),
+  psa4 |> select(delta_cost, delta_utility, ICER) |> mutate(strategy = "Strategy 4")
 )
 
-wtp <- 677205.9772
 medians <- psa_combined %>%
   group_by(strategy) %>%
   summarise(
@@ -592,28 +620,70 @@ strategy_labels <- c(
   "Strategy 4" = "Strategy 4: Combined screening"
 )
 
+# Calculate probability that ICER > wtp for each strategy
+prob_above_wtp <- psa_combined %>%
+  group_by(strategy) %>%
+  summarise(
+    prob = mean(ICER < wtp$base, na.rm = TRUE),
+    prob_low = mean(ICER < wtp$low, na.rm = TRUE),
+    prob_high = mean(ICER < wtp$high, na.rm = TRUE),
+    label = paste0(
+      "Probability cost-effective: ", round(prob * 100, 0), 
+      "% [Range: ", round(prob_low * 100, 0), "% to " , round(prob_high * 100, 0), "%]"
+    ),
+    # Position text in upper right of facet
+    x = -Inf,
+    y = Inf
+  )
+
+
+
+# Calculate approximate angles (adjust these values if they look 'off' due to axis scaling)
+angle_low  <- 9#atan(wtp$low * (max(psa_combined$delta_utility)/12000)) * (180/pi)
+angle_high <- 30 # atan(wtp$high * (max(psa_combined$delta_utility)/12000)) * (180/pi)
+
 PSA_plot <- ggplot(psa_combined, aes(x = delta_utility, y = delta_cost, color = strategy)) +
-  geom_point(size = 2, alpha = 0.2) + 
+  geom_point(size = 1.5, alpha = 0.15) + 
   stat_ellipse(type = "norm", level = 0.8, size = 0.7) +  
   geom_point(data = medians, aes(x = med_eff, y = med_cost, fill = strategy), 
-             size = 5, shape = 21, color = "white", stroke = 1.2) +
-  geom_abline(intercept = 0, slope = wtp, color = "gray30", 
-              linetype = "31", size = 1, alpha = 0.8) +   
+             size = 4, shape = 21, color = "white", stroke = 1.2) +
+  geom_abline(intercept = 0, slope = wtp$base, color = "gray30", 
+              linetype = "solid", size = 1.2, alpha = 0.9) +
+  geom_abline(intercept = 0, slope = wtp$low, color = "gray30", 
+              linetype = "21", size = 1, alpha = 0.5) +
+  geom_abline(intercept = 0, slope = wtp$high, color = "gray30", 
+              linetype = "21", size = 1, alpha = 0.5) +
+  # Add WTP line labels
+annotate("text", x = 8/1000, y = 7700, label = "High WTP", alpha = 0.5,
+         angle = angle_high, 
+         hjust = 1.1, vjust = -0.5, size = 4, color = "gray30") +
+annotate("text", x = 8/1000, y = 3100, label = "Low WTP", alpha = 0.5,
+         angle = angle_low, 
+         hjust = 1.1, vjust = 1.5, size = 4, color = "gray30") +
+  # Add probability annotation
+  geom_text(data = prob_above_wtp, 
+            aes(x = x, y = y, label = label),
+            inherit.aes = FALSE,
+            size = 4.25, hjust = -0.025, vjust = 1.8) +
   scale_color_manual(values = prof_colors, labels = strategy_labels, name = "") +
   scale_fill_manual(values = prof_colors, labels = strategy_labels, name = "") +
   scale_x_continuous(labels = function(x) comma(x * 1000), expand = c(0.02, 0)) +
-  scale_y_continuous(labels = label_comma(), expand = c(0.02, 0), limits = c(0,12000)) +
+  scale_y_continuous(labels = label_comma(), expand = c(0, 0), limits = c(0,12000)) +
   theme_bw(base_size = 18) +
   labs(
     x = "Severe thalassaemia births averted per 1,000 screened",
     y = "Incremental cost (THB)") +
-  theme(legend.position = "bottom",
+  theme(legend.position = "none",
         legend.text = element_text(size = 14)) +
   # Force the legend into two columns
   guides(
     color = guide_legend(ncol = 2),
     fill = guide_legend(ncol = 2)
-  )
+  ) +
+  facet_wrap(~strategy, ncol = 2, labeller = as_labeller(strategy_labels))
+
+print(PSA_plot)
+
 
 # Save the plot with specified dimensions and resolution
 png(here("Plots","PSA_scatter_plot.png"), width = 10, height = 8, units = "in", res = 350)
