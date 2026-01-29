@@ -1,0 +1,17 @@
+parameter,label,Strategy 1,Strategy 2,Strategy 3,Strategy 4
+cost_CBC_Hb,CBC & Hb typing cost per person,"Gamma(25,15.6)",NA,NA,NA
+cost_CBC_Hb2,CBC & Hb typing cost per couple,NA,"Gamma(25,31.2)",NA,"Gamma(25,31.2)"
+cost_DNA_analysis,DNA analysis cost,"Gamma(25,240)","Gamma(25,240)","Gamma(25,240)","Gamma(25,240)"
+cost_PND,PND cost,"Gamma(25,220)",NA,NA,"Gamma(25,220)"
+cost_abortion,Abortion cost,"Gamma(25,120)",NA,NA,"Gamma(25,120)"
+p_C,Probability of carrier baby,Fixed(0.5),Fixed(0.5),Fixed(0.5),Fixed(0.5)
+p_PND,Probability of couple agreeing to PND,"Beta(58,42)",NA,NA,"Beta(58,42)"
+p_T,Probability of severe thalassaemia baby,Fixed(0.25),Fixed(0.25),Fixed(0.25),Fixed(0.25)
+p_abortion,Probability of couple agreeing to abortion,"Beta(67,33)",NA,NA,"Beta(67,33)"
+p_both_partners_healthy,Probability both partners not having trait,Derived((1 - p_one_partner_trait) - p_both_partners_trait),Derived((1 - p_one_partner_trait) - p_both_partners_trait),Derived((1 - p_one_partner_trait) - p_both_partners_trait),Derived((1 - p_one_partner_trait) - p_both_partners_trait)
+p_both_partners_trait,Probability of both partners having trait,"Beta(26,974)","Beta(26,974)","Beta(26,974)","Beta(26,974)"
+p_early_presentation,Probability of early presentation,"Beta(80,20)",NA,NA,NA
+p_one_partner_trait,Probability of one partner having trait,"Beta(269,731)","Beta(269,731)","Beta(269,731)","Beta(269,731)"
+p_reconsideration,Probability of reconsidering decision,NA,"Beta(50,50)","Beta(50,50)","Beta(50,50)"
+p_thalassaemia_trait_M,Probability of man having trait,"Beta(160,840)",NA,NA,NA
+p_thalassaemia_trait_W,Probability of woman having trait,"Beta(160,840)",NA,NA,NA

@@ -535,7 +535,7 @@ source("functions.R")
 
 ## Define WTP threshold
 exchange_rate_2005 <- 40.22  # Example exchange rate USD to THB in 2005
-inflation_rate_thb <- 164.8/111.2  # 2005 to 2023 average inflation rate in Thailand (World Bank GDP deflator)
+inflation_rate_thb <- 166.22/111.2  # 164.8/111.2  # 2005 to 2023 -> 2024 average inflation rate in Thailand (World Bank GDP deflator)
 discount_rate <- 0.03  # 3% discount rate
 years <- 30  # Lifetime in years
 
@@ -654,12 +654,12 @@ PSA_plot <- ggplot(psa_combined, aes(x = delta_utility, y = delta_cost, color = 
   geom_abline(intercept = 0, slope = wtp$high, color = "gray30", 
               linetype = "21", size = 1, alpha = 0.5) +
   # Add WTP line labels
-annotate("text", x = 8/1000, y = 7700, label = "High WTP", alpha = 0.5,
+annotate("text", x = 8/1000, y = 7700, label = "upper WTP", alpha = 0.5,
          angle = angle_high, 
-         hjust = 1.1, vjust = -0.5, size = 4, color = "gray30") +
-annotate("text", x = 8/1000, y = 3100, label = "Low WTP", alpha = 0.5,
+         hjust = 1.1, vjust = -0.5, size = 4.5, color = "gray30") +
+annotate("text", x = 8/1000, y = 3100, label = "lower WTP", alpha = 0.5,
          angle = angle_low, 
-         hjust = 1.1, vjust = 1.5, size = 4, color = "gray30") +
+         hjust = 1.1, vjust = 1.5, size = 4.5, color = "gray30") +
   # Add probability annotation
   geom_text(data = prob_above_wtp, 
             aes(x = x, y = y, label = label),

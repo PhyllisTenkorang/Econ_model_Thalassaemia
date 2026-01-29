@@ -7,6 +7,42 @@ library(scales)
 library(here)
 
 source("plot_functions.R")
+# PSA on Cost-Effectiveness Plane
+source("functions.R")
+
+
+## Define WTP threshold
+exchange_rate_2005 <- 40.22  # Example exchange rate USD to THB in 2005
+inflation_rate_thb <- 166.22/111.2  # 164.8/111.2  # 2005 to 2023 -> 2024 average inflation rate in Thailand (World Bank GDP deflator)
+discount_rate <- 0.03  # 3% discount rate
+years <- 30  # Lifetime in years
+
+wtp_base <- calculate_lifetime_cost(cost_usd_2005 = 562.76,
+                                    exchange_rate = exchange_rate_2005,
+                                    inflation_rate = inflation_rate_thb,
+                                    discount_rate = discount_rate,
+                                    years = years)
+
+wtp_low <- calculate_lifetime_cost(cost_usd_2005 = 224.90,
+                                    exchange_rate = exchange_rate_2005,
+                                    inflation_rate = inflation_rate_thb,
+                                    discount_rate = discount_rate,
+                                    years = years)
+
+wtp_high <- calculate_lifetime_cost(cost_usd_2005 = 782.70,
+                                    exchange_rate = exchange_rate_2005,
+                                    inflation_rate = inflation_rate_thb,
+                                    discount_rate = discount_rate,
+                                    years = years)
+
+wtp <- list(
+  low = wtp_low,
+  base = wtp_base,
+  high = wtp_high
+)
+
+# Alias to match requested naming
+wtp$wtp_base <- wtp_base
 
 #Costs
 cost_CBC_Hb <- GammaModVar$new(
@@ -242,7 +278,7 @@ dt$threshold(
   a = 50,
   b = 1000,
   tol = 0.01,
-  lambda = 677205.9772,
+  lambda = wtp_base,
   nmax = 1000L
 )
 
@@ -254,7 +290,7 @@ dt$threshold(
   a = 0.10,
   b = 0.90,
   tol = 0.01,
-  lambda = 677205.9772,
+  lambda = wtp_base,
   nmax = 1000L
 )
 
@@ -266,7 +302,7 @@ dt$threshold(
   a = 0.10,
   b = 0.90,
   tol = 0.01,
-  lambda = 677205.9772,
+  lambda = wtp_base,
   nmax = 1000L
 )
 
@@ -278,7 +314,7 @@ dt$threshold(
   a = 0.10,
   b = 0.90,
   tol = 0.01,
-  lambda = 677205.9772,
+  lambda = wtp_base,
   nmax = 1000L
 )
 
@@ -376,7 +412,7 @@ dt2$threshold(
   a = 50,
   b = 5000,
   tol = 0.01,
-  lambda = 677205.9772,
+  lambda = wtp_base,
   nmax = 1000L
 )
 
@@ -388,7 +424,7 @@ dt2$threshold(
   a = 10,
   b = 100000,
   tol = 0.01,
-  lambda = 677205.9772,
+  lambda = wtp_base,
   nmax = 1000L
 )
 
@@ -400,7 +436,7 @@ dt2$threshold(
   a = 0.10,
   b = 0.99,
   tol = 0.01,
-  lambda = 677205.9772,
+  lambda = wtp_base,
   nmax = 1000L
 )
 
@@ -501,11 +537,21 @@ dt3$threshold(
   a = 500,
   b = 10000,
   tol = 0.01,
-  lambda = 677205.9772,
+  lambda = wtp_base,
   nmax = 1000L
 )
 
-
+dt3$threshold(
+  index = e84,
+  ref = e85,
+  outcome = "ICER",
+  mvd = "Probability of couple reconsidering decision to conceive",
+  a = 0.10,
+  b = 0.99,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
+)
 
 ## Decision Tree for a combination of pre and post-conception screening +/- abortion (Strategy 4)
 
@@ -617,30 +663,41 @@ tornado_S4 <- plot_tornado_labeled(dt4, e111, e112, outcome = "ICER",
 tornado_S4
 
 # Threshold analysis
-# dt4$threshold(
-#   index = e111,
-#   ref = e112,
-#   outcome = "ICER",
-#   mvd = "Probability of couple reconsidering decision to conceive",
-#   a = 0,
-#   b = 1.00,
-#   tol = 0.00000001,
-#   lambda = 677205.9772,
-#   nmax = 1000L
-# )
+dt4$threshold(
+  index = e111,
+  ref = e112,
+  outcome = "ICER",
+  mvd = "Probability of couple reconsidering decision to conceive",
+  a = 0,
+  b = 1.00,
+  tol = 0.00000001,
+  lambda = wtp_base,
+  nmax = 1000L
+)
 
-# dt4$threshold(
-#   index = e111,
-#   ref = e112,
-#   outcome = "ICER",
-#   mvd = "DNA analysis cost",
-#   a = 50,
-#   b = 100000,
-#   tol = 0.01,
-#   lambda = 677205.9772,
-#   nmax = 1000L
-# )
+dt4$threshold(
+  index = e111,
+  ref = e112,
+  outcome = "ICER",
+  mvd = "DNA analysis cost",
+  a = 50,
+  b = 100000,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
+)
 
+dt4$threshold(
+  index = e111,
+  ref = e112,
+  outcome = "ICER",
+  mvd = "CBC & Hb typing cost per couple",
+  a = 50,
+  b = 5000,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
+)
 
 
 # Combine tornado plots for all strategies
