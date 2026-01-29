@@ -640,7 +640,7 @@ prob_above_wtp <- psa_combined %>%
 
 # Calculate approximate angles (adjust these values if they look 'off' due to axis scaling)
 angle_low  <- 9#atan(wtp$low * (max(psa_combined$delta_utility)/12000)) * (180/pi)
-angle_high <- 30 # atan(wtp$high * (max(psa_combined$delta_utility)/12000)) * (180/pi)
+angle_high <- 27 # atan(wtp$high * (max(psa_combined$delta_utility)/12000)) * (180/pi)
 
 PSA_plot <- ggplot(psa_combined, aes(x = delta_utility, y = delta_cost, color = strategy)) +
   geom_point(size = 1.5, alpha = 0.15) + 
@@ -654,12 +654,12 @@ PSA_plot <- ggplot(psa_combined, aes(x = delta_utility, y = delta_cost, color = 
   geom_abline(intercept = 0, slope = wtp$high, color = "gray30", 
               linetype = "21", size = 1, alpha = 0.5) +
   # Add WTP line labels
-annotate("text", x = 8/1000, y = 7700, label = "upper WTP", alpha = 0.5,
+annotate("text", x = 8/1000, y = 7700, label = "higher standard of care", alpha = 0.5,
          angle = angle_high, 
-         hjust = 1.1, vjust = -0.5, size = 4.5, color = "gray30") +
-annotate("text", x = 8/1000, y = 3100, label = "lower WTP", alpha = 0.5,
+         hjust = 1.05, vjust = -0.5, size = 4.5, color = "gray30") +
+annotate("text", x = 8/1000, y = 3200, label = "lower standard of care", alpha = 0.5,
          angle = angle_low, 
-         hjust = 1.1, vjust = 1.5, size = 4.5, color = "gray30") +
+         hjust = 1.05, vjust = 1.5, size = 4.5, color = "gray30") +
   # Add probability annotation
   geom_text(data = prob_above_wtp, 
             aes(x = x, y = y, label = label),
@@ -667,7 +667,7 @@ annotate("text", x = 8/1000, y = 3100, label = "lower WTP", alpha = 0.5,
             size = 4.25, hjust = -0.025, vjust = 1.8) +
   scale_color_manual(values = prof_colors, labels = strategy_labels, name = "") +
   scale_fill_manual(values = prof_colors, labels = strategy_labels, name = "") +
-  scale_x_continuous(labels = function(x) comma(x * 1000), expand = c(0.02, 0)) +
+  scale_x_continuous(labels = function(x) comma(x * 1000), expand = c(0.002,0), limits = c(-0.0005,0.008)) +
   scale_y_continuous(labels = label_comma(), expand = c(0, 0), limits = c(0,12000)) +
   theme_bw(base_size = 18) +
   labs(
