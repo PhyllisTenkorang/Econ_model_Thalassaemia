@@ -1,0 +1,57 @@
+---
+title: "Running the analyses"
+output: html_document
+---
+
+## Software requirements
+
+Use R 4.4 or later. Install the required packages with:
+
+```r
+install.packages(c(
+  "dplyr", "ggplot2", "ggpubr", "here", "purrr", "rdecision",
+  "readr", "scales", "stringr", "tibble", "tidyr", "tidyverse"
+))
+```
+
+Open `Econ_Model_Thalassaemia.Rproj` or run commands from the repository root.
+
+## Analysis sequence
+
+```sh
+Rscript analysis/01_baseline_analysis.R
+Rscript analysis/02_deterministic_sensitivity_analysis.R
+Rscript analysis/03_probabilistic_sensitivity_analysis.R
+Rscript analysis/04_extract_uncertainty_results.R
+Rscript analysis/05_budget_impact_analysis.R
+Rscript analysis/06_prevalence_analysis.R
+Rscript tests/verify_results.R
+```
+
+`04_extract_uncertainty_results.R` sources the PSA analysis internally, so it
+is not necessary to run script 03 separately when only the uncertainty tables
+are required.
+
+## Reproducible PSA options
+
+The default PSA uses 1,000 simulations and seed 20260804. Override them before
+sourcing the extraction script:
+
+```r
+options(
+  thalassaemia.psa_iterations = 10000L,
+  thalassaemia.psa_seed = 20260804L
+)
+source("analysis/04_extract_uncertainty_results.R")
+```
+
+## Principal outputs
+
+- `outputs/tables/base_case_results.csv`
+- `outputs/tables/DSA_parameter_bounds.csv`
+- `outputs/tables/PSA_95_uncertainty_intervals.csv`
+- `outputs/tables/budget_impact_results.csv`
+- `outputs/tables/prevalence_analysis_results.csv`
+- `outputs/tables/prevalence_thresholds.csv`
+- `outputs/figures/PSA_scatter_plot.png`
+- `outputs/figures/combined_tornado_plots.png`

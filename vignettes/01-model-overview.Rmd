@@ -1,0 +1,60 @@
+---
+title: "Model overview"
+output: html_document
+---
+
+## Objective
+
+The model estimates the incremental cost per severe thalassaemia birth averted
+for four screening strategies in Thailand. Each strategy is compared with no
+screening.
+
+## Strategies
+
+1. Post-conception screening.
+2. Pre-conception CBC and Hb typing with targeted DNA analysis.
+3. Pre-conception universal DNA analysis.
+4. Combined pre- and post-conception screening.
+
+## Outcomes
+
+The model reports:
+
+- incremental cost in THB;
+- the proportion of severe thalassaemia births averted; and
+- the ICER in THB per severe thalassaemia birth averted.
+
+The deterministic base-case results are written to
+`outputs/tables/base_case_results.csv`.
+
+## Base-case carrier prevalence
+
+Individual carrier prevalence is 0.16. Under random mating, the corresponding
+couple probabilities are:
+
+\[
+P(\text{both carriers}) = p^2 = 0.0256,
+\]
+
+\[
+P(\text{one carrier}) = 2p(1-p) = 0.2688,
+\]
+
+and
+
+\[
+P(\text{neither carrier}) = (1-p)^2 = 0.7056.
+\]
+
+## Willingness-to-pay definition
+
+The cost-effectiveness threshold represents the discounted lifetime cost of
+managing severe thalassaemia. All supported analyses call
+`calculate_wtp_thresholds()` from `R/economic_functions.R`, using:
+
+- 2005 exchange rate: 40.22 THB per USD;
+- inflation adjustment: 166.22 / 111.2;
+- annual discount rate: 3%;
+- time horizon: 30 years; and
+- annual 2005 management costs of USD 224.90, 562.76, and 782.70 for the low,
+  base, and high thresholds.

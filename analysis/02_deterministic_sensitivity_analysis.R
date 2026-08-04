@@ -21,37 +21,11 @@ safe_threshold <- function(tree, ...) {
 }
 
 
-## Define WTP threshold
-exchange_rate_2005 <- 40.22  # Example exchange rate USD to THB in 2005
-inflation_rate_thb <- 166.22/111.2  # 164.8/111.2  # 2005 to 2023 -> 2024 average inflation rate in Thailand (World Bank GDP deflator)
-discount_rate <- 0.03  # 3% discount rate
-years <- 30  # Lifetime in years
-
-wtp_base <- calculate_lifetime_cost(cost_usd_2005 = 562.76,
-                                    exchange_rate = exchange_rate_2005,
-                                    inflation_rate = inflation_rate_thb,
-                                    discount_rate = discount_rate,
-                                    years = years)
-
-wtp_low <- calculate_lifetime_cost(cost_usd_2005 = 224.90,
-                                    exchange_rate = exchange_rate_2005,
-                                    inflation_rate = inflation_rate_thb,
-                                    discount_rate = discount_rate,
-                                    years = years)
-
-wtp_high <- calculate_lifetime_cost(cost_usd_2005 = 782.70,
-                                    exchange_rate = exchange_rate_2005,
-                                    inflation_rate = inflation_rate_thb,
-                                    discount_rate = discount_rate,
-                                    years = years)
-
-wtp <- list(
-  low = wtp_low,
-  base = wtp_base,
-  high = wtp_high
-)
-
-# Alias to match requested naming
+## Define WTP thresholds using the shared main-model assumptions.
+wtp <- calculate_wtp_thresholds()
+wtp_base <- wtp$base
+wtp_low <- wtp$low
+wtp_high <- wtp$high
 wtp$wtp_base <- wtp_base
 
 #Costs
@@ -725,7 +699,6 @@ dev.off()
 png(here("outputs", "figures", "combined_tornado_plots.png"), width = 14, height = 11, units = "in", res = 350)
 print(combined_tornado)
 dev.off()
-
 
 
 

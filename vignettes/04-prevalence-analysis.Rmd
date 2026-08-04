@@ -1,0 +1,59 @@
+---
+title: "Individual carrier-prevalence analysis"
+output: html_document
+---
+
+## Definition
+
+The prevalence parameter \(p\) is the probability that an individual is a
+thalassaemia carrier. Couple probabilities assume random mating:
+
+\[
+P(\text{both carriers}) = p^2,
+\]
+
+\[
+P(\text{one carrier}) = 2p(1-p),
+\]
+
+and
+
+\[
+P(\text{neither carrier}) = (1-p)^2.
+\]
+
+These probabilities sum to one for every value of \(p\).
+
+## Implementation
+
+`analysis/06_prevalence_analysis.R` calculates each strategy's incremental cost
+and severe births averted directly from the corresponding decision-tree
+equations. This avoids relying on row positions in path-level output.
+
+The default grid is 1% to 30% individual carrier prevalence in one-percentage-
+point increments. A custom grid can be supplied with:
+
+```r
+options(thalassaemia.prevalence_grid = seq(0.01, 0.50, by = 0.005))
+source("analysis/06_prevalence_analysis.R")
+```
+
+At \(p=0.16\), the script verifies that all four incremental costs and effects
+equal the main deterministic base-case results.
+
+## Cost-effectiveness thresholds
+
+For each strategy, the prevalence threshold is the individual carrier
+prevalence at which:
+
+\[
+\frac{\Delta C(p)}{\Delta E(p)} = \lambda,
+\]
+
+where \(\lambda\) is the same base WTP threshold returned by
+`calculate_wtp_thresholds()` and used by the DSA and PSA.
+
+Outputs are saved to:
+
+- `outputs/tables/prevalence_analysis_results.csv`; and
+- `outputs/tables/prevalence_thresholds.csv`.

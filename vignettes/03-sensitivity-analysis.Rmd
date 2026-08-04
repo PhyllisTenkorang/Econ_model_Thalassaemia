@@ -1,0 +1,40 @@
+---
+title: "Deterministic and probabilistic sensitivity analysis"
+output: html_document
+---
+
+## Deterministic sensitivity analysis
+
+The one-way DSA evaluates each uncertain parameter at the 2.5th and 97.5th
+percentiles of its assigned Gamma or Beta distribution while holding other
+parameters at their base values. The exported table includes the base, lower,
+and upper parameter values for every strategy.
+
+Results are saved to `outputs/tables/DSA_parameter_bounds.csv`. Tornado plots
+are saved under `outputs/figures/`.
+
+If a threshold-search interval does not bracket a root, the analysis records
+the threshold as unavailable rather than terminating the DSA workflow.
+
+## Probabilistic sensitivity analysis
+
+Costs follow Gamma distributions and uncertain probabilities follow Beta
+distributions. Couple-prevalence distributions have means aligned with the
+base-case probabilities of 0.2688 for one carrier and 0.0256 for both carriers.
+
+The PSA output reports, for incremental cost, births averted, and the ICER:
+
+- deterministic baseline;
+- simulation median;
+- empirical 2.5th percentile; and
+- empirical 97.5th percentile.
+
+Births averted are retained as proportions in the CSV output.
+
+## Strategy 1 ICER uncertainty
+
+For Strategy 1, the simulated incremental-effect distribution crosses zero.
+Dividing positive incremental costs by effects very close to zero produces very
+large positive or negative ICERs. Its ICER percentile interval should therefore
+be interpreted alongside the cost-effectiveness plane and the separate
+incremental cost and effect distributions.

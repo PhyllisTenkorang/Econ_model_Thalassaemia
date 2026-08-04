@@ -533,35 +533,11 @@ psa4[, "ICER"] <- psa4[ , "delta_cost"] / psa4[ , "delta_utility"]
 source(here("R", "economic_functions.R"))
 
 
-## Define WTP threshold
-exchange_rate_2005 <- 40.22  # Example exchange rate USD to THB in 2005
-inflation_rate_thb <- 166.22/111.2  # 164.8/111.2  # 2005 to 2023 -> 2024 average inflation rate in Thailand (World Bank GDP deflator)
-discount_rate <- 0.03  # 3% discount rate
-years <- 30  # Lifetime in years
-
-wtp_base <- calculate_lifetime_cost(cost_usd_2005 = 562.76,
-                                    exchange_rate = exchange_rate_2005,
-                                    inflation_rate = inflation_rate_thb,
-                                    discount_rate = discount_rate,
-                                    years = years)
-
-wtp_low <- calculate_lifetime_cost(cost_usd_2005 = 224.90,
-                                    exchange_rate = exchange_rate_2005,
-                                    inflation_rate = inflation_rate_thb,
-                                    discount_rate = discount_rate,
-                                    years = years)
-
-wtp_high <- calculate_lifetime_cost(cost_usd_2005 = 782.70,
-                                    exchange_rate = exchange_rate_2005,
-                                    inflation_rate = inflation_rate_thb,
-                                    discount_rate = discount_rate,
-                                    years = years)
-
-wtp <- list(
-  low = wtp_low,
-  base = wtp_base,
-  high = wtp_high
-)
+## Define WTP thresholds using the shared main-model assumptions.
+wtp <- calculate_wtp_thresholds()
+wtp_base <- wtp$base
+wtp_low <- wtp$low
+wtp_high <- wtp$high
 
 # plot_PSA <- function(data, wtp, xlim, ylim){
   
@@ -690,7 +666,6 @@ dir.create(here("outputs", "figures"), recursive = TRUE, showWarnings = FALSE)
 png(here("outputs", "figures", "PSA_scatter_plot.png"), width = 10, height = 8, units = "in", res = 350)
 print(PSA_plot)
 dev.off()
-
 
 
 
