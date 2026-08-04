@@ -9,9 +9,9 @@ p_PND,Probability of couple agreeing to PND,"Beta(58,42)",NA,NA,"Beta(58,42)"
 p_T,Probability of severe thalassaemia baby,Fixed(0.25),Fixed(0.25),Fixed(0.25),Fixed(0.25)
 p_abortion,Probability of couple agreeing to abortion,"Beta(67,33)",NA,NA,"Beta(67,33)"
 p_both_partners_healthy,Probability both partners not having trait,Derived((1 - p_one_partner_trait) - p_both_partners_trait),Derived((1 - p_one_partner_trait) - p_both_partners_trait),Derived((1 - p_one_partner_trait) - p_both_partners_trait),Derived((1 - p_one_partner_trait) - p_both_partners_trait)
-p_both_partners_trait,Probability of both partners having trait,"Beta(26,974)","Beta(26,974)","Beta(26,974)","Beta(26,974)"
+p_both_partners_trait,Probability of both partners having trait,"Beta(25.6,974.4)","Beta(25.6,974.4)","Beta(25.6,974.4)","Beta(25.6,974.4)"
 p_early_presentation,Probability of early presentation,"Beta(80,20)",NA,NA,NA
-p_one_partner_trait,Probability of one partner having trait,"Beta(269,731)","Beta(269,731)","Beta(269,731)","Beta(269,731)"
+p_one_partner_trait,Probability of one partner having trait,"Beta(268.8,731.2)","Beta(268.8,731.2)","Beta(268.8,731.2)","Beta(268.8,731.2)"
 p_reconsideration,Probability of reconsidering decision,NA,"Beta(50,50)","Beta(50,50)","Beta(50,50)"
 p_thalassaemia_trait_M,Probability of man having trait,"Beta(160,840)",NA,NA,NA
 p_thalassaemia_trait_W,Probability of woman having trait,"Beta(160,840)",NA,NA,NA

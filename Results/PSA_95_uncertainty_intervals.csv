@@ -1,0 +1,13 @@
+"strategy","outcome","simulations_used","baseline","median","lower_95_UI","upper_95_UI"
+"Strategy 1: Post-conception screening","Incremental cost (THB)",1000,677.300096,674.817541018195,495.99339701558,895.260956818355
+"Strategy 1: Post-conception screening","Severe thalassaemia births averted",1000,0.00198963199999991,0.00195111627359013,-0.000481266072854777,0.00490656359149985
+"Strategy 1: Post-conception screening","ICER (THB per severe thalassaemia birth averted)",1000,340414.758106037,314343.217700071,-2320655.17989644,3606154.52396184
+"Strategy 2: Pre-conception screening, targeted DNA","Incremental cost (THB)",1000,933.6,924.424317819286,648.661799160003,1256.9037016869
+"Strategy 2: Pre-conception screening, targeted DNA","Severe thalassaemia births averted",1000,0.00320000000000009,0.00322057320295088,0.00199289502730254,0.00492980031608172
+"Strategy 2: Pre-conception screening, targeted DNA","ICER (THB per severe thalassaemia birth averted)",1000,291749.999999992,285551.844729283,180112.269500049,497102.51783815
+"Strategy 3: Pre-conception screening, universal DNA","Incremental cost (THB)",1000,6000,5988.49657763772,3876.67714360784,8631.8666341545
+"Strategy 3: Pre-conception screening, universal DNA","Severe thalassaemia births averted",1000,0.00319999999999998,0.00311761144221556,0.00191990220407233,0.00478322689035361
+"Strategy 3: Pre-conception screening, universal DNA","ICER (THB per severe thalassaemia birth averted)",1000,1875000.00000001,1923956.1988427,1030528.95143772,3433940.35555381
+"Strategy 4: Combined pre- and post-conception screening","Incremental cost (THB)",1000,978.16256,959.587976839474,676.168215248236,1295.67136640078
+"Strategy 4: Combined pre- and post-conception screening","Severe thalassaemia births averted",1000,0.00444351999999992,0.00434103698065941,0.00283517352474735,0.00637884831854705
+"Strategy 4: Combined pre- and post-conception screening","ICER (THB per severe thalassaemia birth averted)",1000,220132.363531618,219575.93491675,142771.026606532,350741.582568211

@@ -42,10 +42,10 @@ p_thalassaemia_trait_M <- BetaModVar$new(
   "Probability of man having trait", "", alpha = 160, beta = 840)
 
 p_one_partner_trait <- BetaModVar$new(
-  "Probability of one partner having trait", "", alpha = 269, beta = 731)
+  "Probability of one partner having trait", "", alpha = 268.8, beta = 731.2)
 
 p_both_partners_trait <- BetaModVar$new(
-  "Probability of both partners having trait", "", alpha = 26, beta = 974)
+  "Probability of both partners having trait", "", alpha = 25.6, beta = 974.4)
 
 p_both_partners_healthy <- ExprModVar$new(
   "Probability of both partners not having trait", "", 
@@ -689,7 +689,6 @@ print(PSA_plot)
 png(here("Plots","PSA_scatter_plot.png"), width = 10, height = 8, units = "in", res = 350)
 print(PSA_plot)
 dev.off()
-
 
 
 
