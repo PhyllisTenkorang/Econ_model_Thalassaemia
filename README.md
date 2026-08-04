@@ -1,14 +1,15 @@
 # Economic model of thalassaemia screening in Thailand
 
-This R project evaluates four strategies against no screening:
+This project evaluates the cost-effectiveness and budget impact of four
+thalassaemia screening strategies in Thailand against "no screening":
 
 1. Post-conception screening.
 2. Pre-conception CBC and Hb typing with targeted DNA analysis.
 3. Pre-conception universal DNA analysis.
 4. Combined pre- and post-conception screening.
 
-The primary outcome is incremental cost in Thai baht (THB) per severe
-thalassaemia birth averted.
+The primary outcome is the incremental screening cost per severe thalassaemia
+birth averted (in Thai Baht).
 
 ## Quick start
 
