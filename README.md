@@ -3,7 +3,7 @@
 This R project evaluates four thalassaemia screening strategies against no
 screening:
 
-1. Post-conception screening with or without abortion.
+1. Post-conception screening.
 2. Pre-conception screening using CBC and Hb typing with targeted DNA analysis.
 3. Pre-conception screening using universal DNA analysis.
 4. Combined pre- and post-conception screening.
@@ -11,8 +11,7 @@ screening:
 The primary outcome is the incremental cost in Thai baht (THB) per severe
 thalassaemia birth averted. The project includes base-case cost-effectiveness,
 deterministic sensitivity analysis (DSA), probabilistic sensitivity analysis
-(PSA), and budget-impact analysis. Exploratory prevalence analyses are retained
-in the legacy archive pending methodological review.
+(PSA), and budget-impact analysis.
 
 ## Project structure
 
@@ -23,11 +22,8 @@ data/model_inputs/ Model CSV inputs and supporting source material
 outputs/figures/   Generated figures
 outputs/tables/    Generated result tables
 tests/             Lightweight reproducibility checks
-archive/           Exploratory and superseded scripts retained for reference
+archive/           Earlier project scripts retained for reference
 ```
-
-The files in `archive/` are not part of the supported workflow and may rely on
-older assumptions or incomplete APIs.
 
 ## Requirements
 
