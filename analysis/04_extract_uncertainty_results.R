@@ -4,8 +4,6 @@
 # tornado analysis. PSA intervals are empirical 2.5th and 97.5th percentiles
 # across the simulations, with the median included as the central estimate.
 
-set.seed(20260804)
-
 # PSA.R constructs all four decision trees and runs the PSA simulations.
 # Run it from the project root so its relative paths resolve correctly.
 library(here)
@@ -15,13 +13,14 @@ library(here)
 project_here <- here::here
 here <- function(...) {
   parts <- list(...)
-  if (length(parts) > 0L && identical(parts[[1L]], "Plots")) {
-    return(do.call(file.path, c(list(tempdir()), parts[-1L])))
+  if (length(parts) > 1L && identical(parts[[1L]], "outputs") &&
+      identical(parts[[2L]], "figures")) {
+    return(file.path(tempdir(), parts[[length(parts)]]))
   }
   do.call(project_here, parts)
 }
 grDevices::pdf(file.path(tempdir(), "PSA_extraction_plots.pdf"))
-source("PSA.R")
+source(project_here("analysis", "03_probabilistic_sensitivity_analysis.R"))
 grDevices::dev.off()
 
 baseline_results <- function(es, intervention, comparator) {
@@ -153,17 +152,18 @@ summarise_psa <- function(spec) {
 psa_intervals <- do.call(rbind, lapply(strategy_specs, summarise_psa))
 rownames(psa_intervals) <- NULL
 
-dir.create("Results", showWarnings = FALSE, recursive = TRUE)
+results_dir <- project_here("outputs", "tables")
+dir.create(results_dir, showWarnings = FALSE, recursive = TRUE)
 
 utils::write.csv(
   dsa_bounds,
-  file = file.path("Results", "DSA_parameter_bounds.csv"),
+  file = file.path(results_dir, "DSA_parameter_bounds.csv"),
   row.names = FALSE
 )
 
 utils::write.csv(
   psa_intervals,
-  file = file.path("Results", "PSA_95_uncertainty_intervals.csv"),
+  file = file.path(results_dir, "PSA_95_uncertainty_intervals.csv"),
   row.names = FALSE
 )
 

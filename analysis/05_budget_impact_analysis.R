@@ -1,4 +1,5 @@
 library(tidyverse)
+library(here)
 # ==============================================================================
 # Budget Impact Analysis for Thalassaemia Screening Strategies
 # ==============================================================================
@@ -50,4 +51,11 @@ for (i in 1:nrow(tabs)) {
 # Add USD equivalent column by converting THB to USD
 results <- within(results, {
   total_cost_usd <- total_cost_local / exchange_rate
-}) 
+})
+
+dir.create(here("outputs", "tables"), recursive = TRUE, showWarnings = FALSE)
+write.csv(
+  results,
+  here("outputs", "tables", "budget_impact_results.csv"),
+  row.names = FALSE
+)

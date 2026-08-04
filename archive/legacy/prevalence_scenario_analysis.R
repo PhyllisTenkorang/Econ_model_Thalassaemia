@@ -1,104 +1,38 @@
-## Decision Tree for Post-Conception Screening +/- Abortion for Thalassaemia prevention
+## Decision Tree for Post-Conception Screening for thalassaemia prevention
 
 # Load required libraries
 library(rdecision)
-library(tidyverse)
-library(scales)
-library(here)
-
-source("plot_functions.R")
-# PSA on Cost-Effectiveness Plane
-source("functions.R")
-
-
-## Define WTP threshold
-exchange_rate_2005 <- 40.22  # Example exchange rate USD to THB in 2005
-inflation_rate_thb <- 166.22/111.2  # 164.8/111.2  # 2005 to 2023 -> 2024 average inflation rate in Thailand (World Bank GDP deflator)
-discount_rate <- 0.03  # 3% discount rate
-years <- 30  # Lifetime in years
-
-wtp_base <- calculate_lifetime_cost(cost_usd_2005 = 562.76,
-                                    exchange_rate = exchange_rate_2005,
-                                    inflation_rate = inflation_rate_thb,
-                                    discount_rate = discount_rate,
-                                    years = years)
-
-wtp_low <- calculate_lifetime_cost(cost_usd_2005 = 224.90,
-                                    exchange_rate = exchange_rate_2005,
-                                    inflation_rate = inflation_rate_thb,
-                                    discount_rate = discount_rate,
-                                    years = years)
-
-wtp_high <- calculate_lifetime_cost(cost_usd_2005 = 782.70,
-                                    exchange_rate = exchange_rate_2005,
-                                    inflation_rate = inflation_rate_thb,
-                                    discount_rate = discount_rate,
-                                    years = years)
-
-wtp <- list(
-  low = wtp_low,
-  base = wtp_base,
-  high = wtp_high
-)
-
-# Alias to match requested naming
-wtp$wtp_base <- wtp_base
 
 #Costs
-cost_CBC_Hb <- GammaModVar$new(
-  "CBC & Hb typing cost per person", "THB",
-  shape = (390 ^ 2L) / (78 ^ 2L),
-  scale = (78 ^ 2L) / 390)
+cost_CBC_Hb <- 390
 
-cost_CBC_Hb2 <- GammaModVar$new(
-  "CBC & Hb typing cost per couple", "THB",
-  shape = (780 ^ 2L) / (156 ^ 2L),
-  scale = (156 ^ 2L) / 780)
+cost_CBC_Hb2 <- 780
 
-cost_DNA_analysis <- GammaModVar$new(
-  "DNA analysis cost", "THB",
-  shape = (6000 ^ 2L) / (1200 ^ 2L),
-  scale = (1200 ^ 2L) / 6000)
+cost_DNA_analysis <- 6000
 
-cost_PND <- GammaModVar$new(
-  "PND cost", "THB",
-  shape = (5500 ^ 2L) / (1100 ^ 2L),
-  scale = (1100 ^ 2L) / 5500)
+cost_PND <- 5500
 
-cost_abortion <- GammaModVar$new(
-  "Abortion cost", "THB",
-  shape = (3000 ^ 2L) / (600 ^ 2L),
-  scale = (600 ^ 2L) / 3000)
+cost_abortion <- 3000
 
 
 # Probabilties
-p_early_presentation <- BetaModVar$new(
-  "Probability of early presentation", "", 
-  alpha = 80, beta = 20)
+p_early_presentation <- 0.8
 
-p_thalassaemia_trait_W <- BetaModVar$new(
-  "Probability of woman having trait", "", alpha = 160, beta = 840)
+p_thalassaemia_trait_W <- 0.10
 
-p_thalassaemia_trait_M <- BetaModVar$new(
-  "Probability of man having trait", "", alpha = 160, beta = 840)
+p_thalassaemia_trait_M <- 0.10
 
-p_one_partner_trait <- 0.2688
+p_one_partner_trait <- 0.18
 
-p_both_partners_trait <- 0.0256
+p_both_partners_trait <- 0.01
 
-p_both_partners_healthy <- 0.7056
+p_both_partners_healthy <- 0.81
 
-p_PND <- BetaModVar$new(
-  "Probability of couple agreeing to PND", "", 
-  alpha = 58, beta = 42)
+p_PND <- 0.58
 
-p_abortion <- BetaModVar$new(
-  "Probability of couple agreeing to abortion", "", 
-  alpha = 67, beta = 33)
+p_abortion <- 0.67
 
-p_reconsideration <- BetaModVar$new(
-  "Probability of couple reconsidering decision to conceive", "", 
-  alpha = 50, beta = 50)
+p_reconsideration <- 0.50
 
 p_C <- 0.50                          # probability of carrier baby
 p_T <- 0.25                          # probability of severe thalassaemia baby
@@ -109,9 +43,9 @@ T <- "Severe Thalassaemia baby"
 H <- "Non-carier baby"
 C <- "Carrier baby"
 
-# Decision Tree for post-conception screening (Strategy 1)
+# Decision Tree for post-conception screening
 
-# Define the post-conception screening branch 
+# Define the post-conception screening branch
 ta <- LeafNode$new("No baby", utility = 1.0)
 tb <- LeafNode$new("T1", utility = 0.0)
 c13 <- ChanceNode$new()
@@ -261,64 +195,23 @@ dt <- DecisionTree$new(V, E)
 es <- dt$evaluate(by = "strategy")
 ep <- dt$evaluate(by = "path")
 
-# One-way sensitivity analysis
-dt$tornado(index = e44, ref = e45, outcome = "ICER", draw = TRUE)
-tornado_S1 <- plot_tornado_labeled(dt, e44, e45, outcome = "ICER",
-                     Label = "\nStrategy 1: Post-conception screening",
-                     xmax = 500000, xmin = 100000)
-tornado_S1
+# ICER
+inc_cost <- es$Cost[2] - es$Cost[1]
+T_averted <- ep$Probability[6] - (ep$Probability[24] + ep$Probability[25] + ep$Probability[26])
+ICER <- inc_cost / T_averted
 
 
-# Threshold analysis
-dt$threshold(
-  index = e44,
-  ref = e45,
-  outcome = "ICER",
-  mvd = "CBC & Hb typing cost per person",
-  a = 50,
-  b = 1000,
-  tol = 0.01,
-  lambda = wtp_base,
-  nmax = 1000L
-)
 
-dt$threshold(
-  index = e44,
-  ref = e45,
-  outcome = "ICER",
-  mvd = "Probability of couple agreeing to PND",
-  a = 0.10,
-  b = 0.90,
-  tol = 0.01,
-  lambda = wtp_base,
-  nmax = 1000L
-)
+## Decision Tree for proposed pre-conception screening (Option 1)
+p_thalassaemia_trait_W <- 0.10
 
-dt$threshold(
-  index = e44,
-  ref = e45,
-  outcome = "ICER",
-  mvd = "Probability of couple agreeing to abortion",
-  a = 0.10,
-  b = 0.90,
-  tol = 0.01,
-  lambda = wtp_base,
-  nmax = 1000L
-)
+p_thalassaemia_trait_M <- 0.10
 
-dt$threshold(
-  index = e44,
-  ref = e45,
-  outcome = "ICER",
-  mvd = "Probability of early presentation",
-  a = 0.10,
-  b = 0.90,
-  tol = 0.01,
-  lambda = wtp_base,
-  nmax = 1000L
-)
+p_one_partner_trait <- 0.18
 
-## Decision Tree for proposed pre-conception screening (Strategy 2)
+p_both_partners_trait <- 0.01
+
+p_both_partners_healthy <- 0.81
 
 # Define branch for pre-conception screening
 t1 <- LeafNode$new("T5", utility = 0.0)
@@ -398,51 +291,23 @@ dt2 <- DecisionTree$new(V, E)
 es2 <- dt2$evaluate(by = "strategy")
 ep2 <- dt2$evaluate(by = "path")
 
-dt2$tornado(index = e64, ref = e65, outcome = "ICER", draw = TRUE)
-tornado_S2 <- plot_tornado_labeled(dt2, e64, e65, outcome = "ICER",
-                      Label = "Strategy 2: Pre-conception screening\nwith targeted DNA analysis",
-                      xmax = 500000, xmin = 50000)
-tornado_S2
-#Threshold analysis
-dt2$threshold(
-  index = e64,
-  ref = e65,
-  outcome = "ICER",
-  mvd = "CBC & Hb typing cost per couple",
-  a = 50,
-  b = 5000,
-  tol = 0.01,
-  lambda = wtp_base,
-  nmax = 1000L
-)
-
-dt2$threshold(
-  index = e64,
-  ref = e65,
-  outcome = "ICER",
-  mvd = "DNA analysis cost",
-  a = 10,
-  b = 100000,
-  tol = 0.01,
-  lambda = wtp_base,
-  nmax = 1000L
-)
-
-dt2$threshold(
-  index = e64,
-  ref = e65,
-  outcome = "ICER",
-  mvd = "Probability of couple reconsidering decision to conceive",
-  a = 0.10,
-  b = 0.99,
-  tol = 0.01,
-  lambda = wtp_base,
-  nmax = 1000L
-)
+# ICER2
+inc_cost2 <- es2$Cost[2] - es2$Cost[1]
+T_averted2 <- ep2$Probability[6] - ep2$Probability[13]
+ICER2 <- inc_cost2 / T_averted2
 
 
 
-## Decision Tree for proposed pre-conception screening (Strategy 3)
+## Decision Tree for proposed pre-conception screening (Option 2)
+p_thalassaemia_trait_W <- 0.27
+
+p_thalassaemia_trait_M <- 0.27
+
+p_one_partner_trait <- 0.3942
+
+p_both_partners_trait <- 0.0729
+
+p_both_partners_healthy <- 0.5329
 
 # Define branch for pre-conception screening
 t14 <- LeafNode$new("T7", utility = 0.0)
@@ -456,9 +321,9 @@ e68 <- Reaction$new(c73, t16, p = NA_real_)
 t17 <- LeafNode$new("No baby or alternatives", utility = 1.0)
 c72 <- ChanceNode$new()
 e69 <- Reaction$new(c72, t17, p = p_reconsideration,
-                     label = "Reconsideration")
+                    label = "Reconsideration")
 e70 <- Reaction$new(c72, c73, p = NA_real_,
-                     label = "No Reconsideration")
+                    label = "No Reconsideration")
 
 t18 <- LeafNode$new("H20", utility = 1.0)
 t19 <- LeafNode$new("C14", utility = 1.0)
@@ -523,37 +388,23 @@ dt3 <- DecisionTree$new(V, E)
 es3 <- dt3$evaluate(by = "strategy")
 ep3 <- dt3$evaluate(by = "path")
 
-dt3$tornado(index = e84, ref = e85, outcome = "ICER", draw = TRUE)
-tornado_S3 <- plot_tornado_labeled(dt3, e84, e85, outcome = "ICER",
-                      Label = "Strategy 3: Pre-conception screening \nwith universal DNA analysis",
-                      xmax = 3000000, xmin = 500000) 
-tornado_S3
+# ICER3
+inc_cost3 <- es3$Cost[2] - es3$Cost[1]
+T_averted3 <- ep3$Probability[6] - ep3$Probability[13]
+ICER3 <- inc_cost3 / T_averted3
 
-dt3$threshold(
-  index = e84,
-  ref = e85,
-  outcome = "ICER",
-  mvd = "DNA analysis cost",
-  a = 500,
-  b = 10000,
-  tol = 0.01,
-  lambda = wtp_base,
-  nmax = 1000L
-)
 
-dt3$threshold(
-  index = e84,
-  ref = e85,
-  outcome = "ICER",
-  mvd = "Probability of couple reconsidering decision to conceive",
-  a = 0.10,
-  b = 0.99,
-  tol = 0.01,
-  lambda = wtp_base,
-  nmax = 1000L
-)
 
-## Decision Tree for a combination of pre and post-conception screening +/- abortion (Strategy 4)
+## Decision Tree for a combination of pre and post-conception screening
+p_thalassaemia_trait_W <- 0.085
+
+p_thalassaemia_trait_M <- 0.085
+
+p_one_partner_trait <- 0.15555
+
+p_both_partners_trait <- 0.007225
+
+p_both_partners_healthy <- 0.837225
 
 # Define branch for screening
 t27 <- LeafNode$new("No baby", utility = 1.0)
@@ -656,64 +507,14 @@ dt4 <- DecisionTree$new(V, E)
 es4 <- dt4$evaluate(by = "strategy")
 ep4 <- dt4$evaluate(by = "path")
 
-dt4$tornado(index = e111, ref = e112, outcome = "ICER", draw = TRUE)
-tornado_S4 <- plot_tornado_labeled(dt4, e111, e112, outcome = "ICER",
-                      Label = "Strategy 4: Combination of \npre- and post-conception screening",
-                      xmax = 350000, xmin = 50000)
-tornado_S4
-
-# Threshold analysis
-dt4$threshold(
-  index = e111,
-  ref = e112,
-  outcome = "ICER",
-  mvd = "Probability of couple reconsidering decision to conceive",
-  a = 0,
-  b = 1.00,
-  tol = 0.00000001,
-  lambda = wtp_base,
-  nmax = 1000L
-)
-
-dt4$threshold(
-  index = e111,
-  ref = e112,
-  outcome = "ICER",
-  mvd = "DNA analysis cost",
-  a = 50,
-  b = 100000,
-  tol = 0.01,
-  lambda = wtp_base,
-  nmax = 1000L
-)
-
-dt4$threshold(
-  index = e111,
-  ref = e112,
-  outcome = "ICER",
-  mvd = "CBC & Hb typing cost per couple",
-  a = 50,
-  b = 5000,
-  tol = 0.01,
-  lambda = wtp_base,
-  nmax = 1000L
-)
+# ICER4
+inc_cost4 <- es4$Cost[2] - es4$Cost[1]
+T_averted4 <- ep4$Probability[6] - (ep4$Probability[16] + ep4$Probability[17])
+ICER4 <- inc_cost4 / T_averted4
 
 
-# Combine tornado plots for all strategies
-library(ggpubr)
-combined_tornado <- ggarrange(tornado_S1, tornado_S2,
-                              tornado_S3, tornado_S4,
-                              ncol = 2, nrow = 2, align = "hv")
-combined_tornado
-# Save the combined tornado plot
-pdf(here("Plots","combined_tornado_plots.pdf"), width = 18, height = 12)
-print(combined_tornado)
-dev.off()
 
-png(here("Plots","combined_tornado_plots.png"), width = 14, height = 11, units = "in", res = 350)
-print(combined_tornado)
-dev.off()
+
 
 
 

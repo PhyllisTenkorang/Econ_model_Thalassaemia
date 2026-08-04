@@ -6,12 +6,13 @@ library(purrr)        # For functional programming tools (e.g., pmap)
 library(rdecision)    # For decision tree classes and methods
 library(stringr)      # For string manipulation
 library(tidyverse)
+library(here)
 
 # Set up data directory and read CSVs
 # Define the directory containing the data files
 # Read nodes, edges, and costs data from CSV files
 
-data_dir <- "Data/"                                       # Directory containing the data files
+data_dir <- here("data", "model_inputs")                  # Directory containing model inputs
 nodes <- read_csv(file.path(data_dir, "nodes1.csv"))      # Node definitions
 edges <- read_csv(file.path(data_dir, "edges1.csv"))      # Edge definitions
 costs <- read_csv(file.path(data_dir, "costs1.csv"))      # Cost definitions
@@ -68,7 +69,7 @@ decision_tree <- DecisionTree$new(
 )
 
 # Draw the decision tree
-decision_tree$draw(border = TRUE, fontsize = 11)
+if (interactive()) decision_tree$draw(border = TRUE, fontsize = 11)
 
 # Evaluate
 es <- decision_tree$evaluate(by = "strategy")
@@ -87,7 +88,7 @@ ICER <- inc_cost / T_averted
 # Define the directory containing the data files
 # Read nodes, edges, and costs data from CSV files
 
-data_dir <- "Data/"                                       # Directory containing the data files
+data_dir <- here("data", "model_inputs")
 nodes <- read_csv(file.path(data_dir, "nodes2.csv"))      # Node definitions
 edges <- read_csv(file.path(data_dir, "edges2.csv"))      # Edge definitions
 costs <- read_csv(file.path(data_dir, "costs1.csv"))      # Cost definitions
@@ -144,7 +145,7 @@ decision_tree2 <- DecisionTree$new(
 )
 
 # Draw the decision tree
-decision_tree2$draw(border = TRUE, fontsize = 11.5)
+if (interactive()) decision_tree2$draw(border = TRUE, fontsize = 11.5)
 
 # Evaluate
 es2 <- decision_tree2$evaluate(by = "strategy")
@@ -163,7 +164,7 @@ ICER2 <- inc_cost2 / T_averted2
 # Define the directory containing the data files
 # Read nodes, edges, and costs data from CSV files
 
-data_dir <- "Data/"                                       # Directory containing the data files
+data_dir <- here("data", "model_inputs")
 nodes <- read_csv(file.path(data_dir, "nodes3.csv"))      # Node definitions
 edges <- read_csv(file.path(data_dir, "edges3.csv"))      # Edge definitions
 costs <- read_csv(file.path(data_dir, "costs1.csv"))      # Cost definitions
@@ -220,7 +221,7 @@ decision_tree3 <- DecisionTree$new(
 )
 
 # Draw the decision tree
-decision_tree3$draw(border = TRUE, fontsize = 12)
+if (interactive()) decision_tree3$draw(border = TRUE, fontsize = 12)
 
 # Evaluate
 es3 <- decision_tree3$evaluate(by = "strategy")
@@ -239,7 +240,7 @@ ICER3 <- inc_cost3 / T_averted3
 # Define the directory containing the data files
 # Read nodes, edges, and costs data from CSV files
 
-data_dir <- "Data/"                                       # Directory containing the data files
+data_dir <- here("data", "model_inputs")
 nodes <- read_csv(file.path(data_dir, "nodes4.csv"))      # Node definitions
 edges <- read_csv(file.path(data_dir, "edges4.csv"))      # Edge definitions
 costs <- read_csv(file.path(data_dir, "costs1.csv"))      # Cost definitions
@@ -296,7 +297,7 @@ decision_tree4 <- DecisionTree$new(
 )
 
 # Draw the decision tree
-decision_tree4$draw(border = TRUE, fontsize = 11)
+if (interactive()) decision_tree4$draw(border = TRUE, fontsize = 11)
 
 # Evaluate
 es4 <- decision_tree4$evaluate(by = "strategy")
@@ -322,6 +323,13 @@ rownames(All_res)<-c("Post-conception screening with/without abortion",
                      "Combination of pre and post-conception screening")
 All_res 
 
+dir.create(here("outputs", "tables"), recursive = TRUE, showWarnings = FALSE)
+write.csv(
+  All_res,
+  here("outputs", "tables", "base_case_results.csv"),
+  row.names = TRUE
+)
+
 
 ## Plot to see CEA results on ICER plane
 
@@ -342,5 +350,4 @@ legend("topright",
        legend = c("CET - Lifetime cost of managing severe Thalassaemia"),
        col = c("red"), 
        lty = 1.5)
-
 

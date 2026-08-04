@@ -1,8 +1,58 @@
-## Decision Tree for Post-Conception Screening for thalassaemia prevention
+## Decision Tree for Post-Conception Screening +/- Abortion for Thalassaemia prevention
 
 # Load required libraries
 library(rdecision)
-library(ggplot2)
+library(tidyverse)
+library(scales)
+library(here)
+
+source(here("R", "plot_functions.R"))
+# PSA on Cost-Effectiveness Plane
+source(here("R", "economic_functions.R"))
+
+safe_threshold <- function(tree, ...) {
+  tryCatch(
+    tree$threshold(...),
+    error = function(e) {
+      warning("Threshold not found: ", conditionMessage(e), call. = FALSE)
+      NA_real_
+    }
+  )
+}
+
+
+## Define WTP threshold
+exchange_rate_2005 <- 40.22  # Example exchange rate USD to THB in 2005
+inflation_rate_thb <- 166.22/111.2  # 164.8/111.2  # 2005 to 2023 -> 2024 average inflation rate in Thailand (World Bank GDP deflator)
+discount_rate <- 0.03  # 3% discount rate
+years <- 30  # Lifetime in years
+
+wtp_base <- calculate_lifetime_cost(cost_usd_2005 = 562.76,
+                                    exchange_rate = exchange_rate_2005,
+                                    inflation_rate = inflation_rate_thb,
+                                    discount_rate = discount_rate,
+                                    years = years)
+
+wtp_low <- calculate_lifetime_cost(cost_usd_2005 = 224.90,
+                                    exchange_rate = exchange_rate_2005,
+                                    inflation_rate = inflation_rate_thb,
+                                    discount_rate = discount_rate,
+                                    years = years)
+
+wtp_high <- calculate_lifetime_cost(cost_usd_2005 = 782.70,
+                                    exchange_rate = exchange_rate_2005,
+                                    inflation_rate = inflation_rate_thb,
+                                    discount_rate = discount_rate,
+                                    years = years)
+
+wtp <- list(
+  low = wtp_low,
+  base = wtp_base,
+  high = wtp_high
+)
+
+# Alias to match requested naming
+wtp$wtp_base <- wtp_base
 
 #Costs
 cost_CBC_Hb <- GammaModVar$new(
@@ -33,7 +83,8 @@ cost_abortion <- GammaModVar$new(
 
 # Probabilties
 p_early_presentation <- BetaModVar$new(
-  "Probability of early presentation", "", alpha = 80, beta = 20)
+  "Probability of early presentation", "", 
+  alpha = 80, beta = 20)
 
 p_thalassaemia_trait_W <- BetaModVar$new(
   "Probability of woman having trait", "", alpha = 160, beta = 840)
@@ -41,15 +92,11 @@ p_thalassaemia_trait_W <- BetaModVar$new(
 p_thalassaemia_trait_M <- BetaModVar$new(
   "Probability of man having trait", "", alpha = 160, beta = 840)
 
-p_one_partner_trait <- BetaModVar$new(
-  "Probability of one partner having trait", "", alpha = 268.8, beta = 731.2)
+p_one_partner_trait <- 0.2688
 
-p_both_partners_trait <- BetaModVar$new(
-  "Probability of both partners having trait", "", alpha = 25.6, beta = 974.4)
+p_both_partners_trait <- 0.0256
 
-p_both_partners_healthy <- ExprModVar$new(
-  "Probability of both partners not having trait", "", 
-  rlang::quo((1-p_one_partner_trait) - p_both_partners_trait))
+p_both_partners_healthy <- 0.7056
 
 p_PND <- BetaModVar$new(
   "Probability of couple agreeing to PND", "", 
@@ -72,9 +119,9 @@ T <- "Severe Thalassaemia baby"
 H <- "Non-carier baby"
 C <- "Carrier baby"
 
-# Decision Tree for post-conception screening
+# Decision Tree for post-conception screening (Strategy 1)
 
-# Define the post-conception screening branch
+# Define the post-conception screening branch 
 ta <- LeafNode$new("No baby", utility = 1.0)
 tb <- LeafNode$new("T1", utility = 0.0)
 c13 <- ChanceNode$new()
@@ -100,7 +147,7 @@ c8 <- ChanceNode$new("DNA analysis")
 e9 <- Reaction$new(c8, c11, p = p_PND, cost = cost_PND,
                    label = "PND")
 e10 <- Reaction$new(c8, c12, p = NA_real_, cost = 0.0,
-                    label = "No PND")
+                   label = "No PND")
 
 th <- LeafNode$new("H3", utility = 1.0)
 ti <- LeafNode$new("C3", utility = 1.0)
@@ -224,16 +271,64 @@ dt <- DecisionTree$new(V, E)
 es <- dt$evaluate(by = "strategy")
 ep <- dt$evaluate(by = "path")
 
-# Probabilistic sensitivity analysis
-N <- 1000L
-psa <- dt$evaluate(setvars = "random", by = "run", N = N)
-psa[ , "delta_cost"] <- psa[ , "Cost.Test woman"] - psa[ , "Cost.No further testing"]
-psa[ , "delta_utility"] <- psa[ , "Utility.Test woman"] - psa[ , "Utility.No further testing"]
-psa[, "ICER"] <- psa[ , "delta_cost"] / psa[ , "delta_utility"]
+# One-way sensitivity analysis
+dt$tornado(index = e44, ref = e45, outcome = "ICER", draw = interactive())
+tornado_S1 <- plot_tornado_labeled(dt, e44, e45, outcome = "ICER",
+                     Label = "\nStrategy 1: Post-conception screening",
+                     xmax = 500000, xmin = 100000)
+if (interactive()) print(tornado_S1)
 
 
+# Threshold analysis
+safe_threshold(dt,
+  index = e44,
+  ref = e45,
+  outcome = "ICER",
+  mvd = "CBC & Hb typing cost per person",
+  a = 50,
+  b = 1000,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
+)
 
-## Decision Tree for proposed pre-conception screening (Option 1)
+safe_threshold(dt,
+  index = e44,
+  ref = e45,
+  outcome = "ICER",
+  mvd = "Probability of couple agreeing to PND",
+  a = 0.10,
+  b = 0.90,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
+)
+
+safe_threshold(dt,
+  index = e44,
+  ref = e45,
+  outcome = "ICER",
+  mvd = "Probability of couple agreeing to abortion",
+  a = 0.10,
+  b = 0.90,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
+)
+
+safe_threshold(dt,
+  index = e44,
+  ref = e45,
+  outcome = "ICER",
+  mvd = "Probability of early presentation",
+  a = 0.10,
+  b = 0.90,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
+)
+
+## Decision Tree for proposed pre-conception screening (Strategy 2)
 
 # Define branch for pre-conception screening
 t1 <- LeafNode$new("T5", utility = 0.0)
@@ -313,18 +408,51 @@ dt2 <- DecisionTree$new(V, E)
 es2 <- dt2$evaluate(by = "strategy")
 ep2 <- dt2$evaluate(by = "path")
 
-# Probabilistic sensitivity analysis
-N <- 1000L
-psa2 <- dt2$evaluate(setvars = "random", by = "run", N = N)
-psa2[ , "delta_cost"] <- psa2[ , "Cost.Screen couple with \nCBC + Hb typing"] - 
-  psa2[ , "Cost.No screening"]
-psa2[ , "delta_utility"] <- psa2[ , "Utility.Screen couple with \nCBC + Hb typing"] - 
-  psa2[ , "Utility.No screening"]
-psa2[, "ICER"] <- psa2[ , "delta_cost"] / psa2[ , "delta_utility"]
+dt2$tornado(index = e64, ref = e65, outcome = "ICER", draw = interactive())
+tornado_S2 <- plot_tornado_labeled(dt2, e64, e65, outcome = "ICER",
+                      Label = "Strategy 2: Pre-conception screening\nwith targeted DNA analysis",
+                      xmax = 500000, xmin = 50000)
+if (interactive()) print(tornado_S2)
+#Threshold analysis
+safe_threshold(dt2,
+  index = e64,
+  ref = e65,
+  outcome = "ICER",
+  mvd = "CBC & Hb typing cost per couple",
+  a = 50,
+  b = 5000,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
+)
+
+safe_threshold(dt2,
+  index = e64,
+  ref = e65,
+  outcome = "ICER",
+  mvd = "DNA analysis cost",
+  a = 10,
+  b = 100000,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
+)
+
+safe_threshold(dt2,
+  index = e64,
+  ref = e65,
+  outcome = "ICER",
+  mvd = "Probability of couple reconsidering decision to conceive",
+  a = 0.10,
+  b = 0.99,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
+)
 
 
 
-## Decision Tree for proposed pre-conception screening (Option 2)
+## Decision Tree for proposed pre-conception screening (Strategy 3)
 
 # Define branch for pre-conception screening
 t14 <- LeafNode$new("T7", utility = 0.0)
@@ -338,9 +466,9 @@ e68 <- Reaction$new(c73, t16, p = NA_real_)
 t17 <- LeafNode$new("No baby or alternatives", utility = 1.0)
 c72 <- ChanceNode$new()
 e69 <- Reaction$new(c72, t17, p = p_reconsideration,
-                    label = "Reconsideration")
+                     label = "Reconsideration")
 e70 <- Reaction$new(c72, c73, p = NA_real_,
-                    label = "No Reconsideration")
+                     label = "No Reconsideration")
 
 t18 <- LeafNode$new("H20", utility = 1.0)
 t19 <- LeafNode$new("C14", utility = 1.0)
@@ -405,27 +533,46 @@ dt3 <- DecisionTree$new(V, E)
 es3 <- dt3$evaluate(by = "strategy")
 ep3 <- dt3$evaluate(by = "path")
 
-# Probabilistic sensitivity analysis
-N <- 1000L
-psa3 <- dt3$evaluate(setvars = "random", by = "run", N = N)
-psa3[ , "delta_cost"] <- psa3[ , "Cost.Screen couple with \nDNA analysis"] - 
-  psa3[ , "Cost.No screening"]
-psa3[ , "delta_utility"] <- psa3[ , "Utility.Screen couple with \nDNA analysis"] - 
-  psa3[ , "Utility.No screening"]
-psa3[, "ICER"] <- psa3[ , "delta_cost"] / psa3[ , "delta_utility"]
+dt3$tornado(index = e84, ref = e85, outcome = "ICER", draw = interactive())
+tornado_S3 <- plot_tornado_labeled(dt3, e84, e85, outcome = "ICER",
+                      Label = "Strategy 3: Pre-conception screening \nwith universal DNA analysis",
+                      xmax = 3000000, xmin = 500000) 
+if (interactive()) print(tornado_S3)
 
+safe_threshold(dt3,
+  index = e84,
+  ref = e85,
+  outcome = "ICER",
+  mvd = "DNA analysis cost",
+  a = 500,
+  b = 10000,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
+)
 
+safe_threshold(dt3,
+  index = e84,
+  ref = e85,
+  outcome = "ICER",
+  mvd = "Probability of couple reconsidering decision to conceive",
+  a = 0.10,
+  b = 0.99,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
+)
 
-## Decision Tree for a combination of pre and post-conception screening
+## Decision Tree for a combination of pre and post-conception screening +/- abortion (Strategy 4)
 
 # Define branch for screening
 t27 <- LeafNode$new("No baby", utility = 1.0)
 t28 <- LeafNode$new("T9", utility = 0.0)
 c97 <- ChanceNode$new()
 e86 <- Reaction$new(c97, t27, p = p_abortion, cost_abortion,
-                    label = "Abortion")
+                     label = "Abortion")
 e87 <- Reaction$new(c97, t28, p = NA_real_, cost = 0.0,
-                    label = "No Abortion")
+                     label = "No Abortion")
 
 t29 <- LeafNode$new("C19", utility = 1.0)
 t30 <- LeafNode$new("H27", utility = 1.0)
@@ -444,16 +591,16 @@ e93 <- Reaction$new(c96, t33, p = NA_real_)
 
 c94 <- ChanceNode$new("Pregnant")
 e94 <- Reaction$new(c94, c96, p = NA_real_, cost = 0.0,
-                    label = "No PND")
+                     label = "No PND")
 e95 <- Reaction$new(c94, c95, p = p_PND, cost = cost_PND,
-                    label = "PND")
+                     label = "PND")
 
 t34 <- LeafNode$new("No baby or alternatives", utility = 1.0)
 c93 <- ChanceNode$new("DNA analysis")
 e96 <- Reaction$new(c93, t34, p = p_reconsideration,
-                    label = "Reconsideration")
+                     label = "Reconsideration")
 e97 <- Reaction$new(c93, c94, p = NA_real_,
-                    label = "No Reconsideration")
+                     label = "No Reconsideration")
 
 t35 <- LeafNode$new("H26", utility = 1.0)
 t36 <- LeafNode$new("C18", utility = 1.0)
@@ -519,200 +666,65 @@ dt4 <- DecisionTree$new(V, E)
 es4 <- dt4$evaluate(by = "strategy")
 ep4 <- dt4$evaluate(by = "path")
 
-# Probabilistic sensitivity analysis
-N <- 1000L
-psa4 <- dt4$evaluate(setvars = "random", by = "run", N = N)
-psa4[ , "delta_cost"] <- psa4[ , "Cost.Screen couple with \nCBC + Hb typing"] - 
-  psa4[ , "Cost.No screening"]
-psa4[ , "delta_utility"] <- psa4[ , "Utility.Screen couple with \nCBC + Hb typing"] - 
-  psa4[ , "Utility.No screening"]
-psa4[, "ICER"] <- psa4[ , "delta_cost"] / psa4[ , "delta_utility"]
+dt4$tornado(index = e111, ref = e112, outcome = "ICER", draw = interactive())
+tornado_S4 <- plot_tornado_labeled(dt4, e111, e112, outcome = "ICER",
+                      Label = "Strategy 4: Combination of \npre- and post-conception screening",
+                      xmax = 350000, xmin = 50000)
+if (interactive()) print(tornado_S4)
 
-
-# PSA on Cost-Effectiveness Plane
-source("functions.R")
-
-
-## Define WTP threshold
-exchange_rate_2005 <- 40.22  # Example exchange rate USD to THB in 2005
-inflation_rate_thb <- 166.22/111.2  # 164.8/111.2  # 2005 to 2023 -> 2024 average inflation rate in Thailand (World Bank GDP deflator)
-discount_rate <- 0.03  # 3% discount rate
-years <- 30  # Lifetime in years
-
-wtp_base <- calculate_lifetime_cost(cost_usd_2005 = 562.76,
-                                    exchange_rate = exchange_rate_2005,
-                                    inflation_rate = inflation_rate_thb,
-                                    discount_rate = discount_rate,
-                                    years = years)
-
-wtp_low <- calculate_lifetime_cost(cost_usd_2005 = 224.90,
-                                    exchange_rate = exchange_rate_2005,
-                                    inflation_rate = inflation_rate_thb,
-                                    discount_rate = discount_rate,
-                                    years = years)
-
-wtp_high <- calculate_lifetime_cost(cost_usd_2005 = 782.70,
-                                    exchange_rate = exchange_rate_2005,
-                                    inflation_rate = inflation_rate_thb,
-                                    discount_rate = discount_rate,
-                                    years = years)
-
-wtp <- list(
-  low = wtp_low,
-  base = wtp_base,
-  high = wtp_high
+# Threshold analysis
+safe_threshold(dt4,
+  index = e111,
+  ref = e112,
+  outcome = "ICER",
+  mvd = "Probability of couple reconsidering decision to conceive",
+  a = 0,
+  b = 1.00,
+  tol = 0.00000001,
+  lambda = wtp_base,
+  nmax = 1000L
 )
 
-# plot_PSA <- function(data, wtp, xlim, ylim){
-  
-#   G <- ggplot(data, aes(x = delta_utility, y = delta_cost)) +
-#     geom_point(alpha = 0.5, color = "blue") +  
-#     geom_abline(intercept = 0, slope = wtp$base, color = "red", linetype = "dashed", size = 1) + 
-#     labs(
-#       x = "Proportion of severe thalassaemia births averted",
-#       y = "Incremental costs (THB)",
-#       caption = "Red dashed line represents lifetime cost of managing a patient with 
-#       severe thalassaemia"
-#     ) +
-#     theme_bw(base_size = 13) +
-#     scale_x_continuous(limits = c(0, xlim), expand = c(0,0))+
-#     scale_y_continuous(limits = c(0, ylim), expand = c(0,0)) 
-#   return(G)
-# }
-
-
-# plot_PSA(data = psa, wtp = wtp, xlim = 0.010, ylim = 10000)
-# plot_PSA(data = psa2, wtp = wtp, xlim = 0.010, ylim = 10000)
-# plot_PSA(data = psa3, wtp = wtp, xlim = 0.010, ylim = 10000)
-# plot_PSA(data = psa4, wtp = wtp, xlim = 0.010, ylim = 10000)
-
-## Proportion of PSA simulations above wtp
-# mean(psa$ICER > wtp, na.rm = TRUE)
-# mean(psa2$ICER > wtp, na.rm = TRUE)
-# mean(psa3$ICER > wtp, na.rm = TRUE)
-# mean(psa4$ICER > wtp, na.rm = TRUE)
-
-
-library(tidyverse)
-library(scales)
-
-psa_combined <- bind_rows(
-  psa  |> select(delta_cost, delta_utility, ICER) |> mutate(strategy = "Strategy 1"),
-  psa2 |> select(delta_cost, delta_utility, ICER) |> mutate(strategy = "Strategy 2"),
-  psa3 |> select(delta_cost, delta_utility, ICER) |> mutate(strategy = "Strategy 3"),
-  psa4 |> select(delta_cost, delta_utility, ICER) |> mutate(strategy = "Strategy 4")
+safe_threshold(dt4,
+  index = e111,
+  ref = e112,
+  outcome = "ICER",
+  mvd = "DNA analysis cost",
+  a = 50,
+  b = 100000,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
 )
 
-medians <- psa_combined %>%
-  group_by(strategy) %>%
-  summarise(
-    med_cost = median(delta_cost),
-    med_eff  = median(delta_utility)
-  )
-
-
-prof_colors <- c("#EA5B6F", "#F79A19", "#3338A0", "#9112BC")
-
-strategy_labels <- c(
-  "Strategy 1" = "Strategy 1: Post-conception", 
-  "Strategy 2" = "Strategy 2: Pre-conception, targeted", 
-  "Strategy 3" = "Strategy 3: Pre-conception, universal", 
-  "Strategy 4" = "Strategy 4: Combined screening"
+safe_threshold(dt4,
+  index = e111,
+  ref = e112,
+  outcome = "ICER",
+  mvd = "CBC & Hb typing cost per couple",
+  a = 50,
+  b = 5000,
+  tol = 0.01,
+  lambda = wtp_base,
+  nmax = 1000L
 )
 
-# Calculate probability that ICER > wtp for each strategy
-prob_above_wtp <- psa_combined %>%
-  group_by(strategy) %>%
-  summarise(
-    prob = mean(ICER < wtp$base, na.rm = TRUE),
-    prob_low = mean(ICER < wtp$low, na.rm = TRUE),
-    prob_high = mean(ICER < wtp$high, na.rm = TRUE),
-    label = paste0(
-      "Probability cost-effective: ", round(prob * 100, 0), 
-      "% [Range: ", round(prob_low * 100, 0), "% to " , round(prob_high * 100, 0), "%]"
-    ),
-    # Position text in upper right of facet
-    x = -Inf,
-    y = Inf
-  )
 
-
-
-# Calculate approximate angles (adjust these values if they look 'off' due to axis scaling)
-angle_low  <- 9#atan(wtp$low * (max(psa_combined$delta_utility)/12000)) * (180/pi)
-angle_high <- 27 # atan(wtp$high * (max(psa_combined$delta_utility)/12000)) * (180/pi)
-
-PSA_plot <- ggplot(psa_combined, aes(x = delta_utility, y = delta_cost, color = strategy)) +
-  geom_point(size = 1.5, alpha = 0.15) + 
-  stat_ellipse(type = "norm", level = 0.8, size = 0.7) +  
-  geom_point(data = medians, aes(x = med_eff, y = med_cost, fill = strategy), 
-             size = 4, shape = 21, color = "white", stroke = 1.2) +
-  geom_abline(intercept = 0, slope = wtp$base, color = "gray30", 
-              linetype = "solid", size = 1.2, alpha = 0.9) +
-  geom_abline(intercept = 0, slope = wtp$low, color = "gray30", 
-              linetype = "21", size = 1, alpha = 0.5) +
-  geom_abline(intercept = 0, slope = wtp$high, color = "gray30", 
-              linetype = "21", size = 1, alpha = 0.5) +
-  # Add WTP line labels
-annotate("text", x = 8/1000, y = 7700, label = "higher standard of care", alpha = 0.5,
-         angle = angle_high, 
-         hjust = 1.05, vjust = -0.5, size = 4.5, color = "gray30") +
-annotate("text", x = 8/1000, y = 3200, label = "lower standard of care", alpha = 0.5,
-         angle = angle_low, 
-         hjust = 1.05, vjust = 1.5, size = 4.5, color = "gray30") +
-  # Add probability annotation
-  geom_text(data = prob_above_wtp, 
-            aes(x = x, y = y, label = label),
-            inherit.aes = FALSE,
-            size = 4.25, hjust = -0.025, vjust = 1.8) +
-  scale_color_manual(values = prof_colors, labels = strategy_labels, name = "") +
-  scale_fill_manual(values = prof_colors, labels = strategy_labels, name = "") +
-  scale_x_continuous(labels = function(x) comma(x * 1000), expand = c(0.002,0), limits = c(-0.0005,0.008)) +
-  scale_y_continuous(labels = label_comma(), expand = c(0, 0), limits = c(0,12000)) +
-  theme_bw(base_size = 18) +
-  labs(
-    x = "Severe thalassaemia births averted per 1,000 screened",
-    y = "Incremental cost (THB)") +
-  theme(legend.position = "none",
-        legend.text = element_text(size = 14)) +
-  # Force the legend into two columns
-  guides(
-    color = guide_legend(ncol = 2),
-    fill = guide_legend(ncol = 2)
-  ) +
-  facet_wrap(~strategy, ncol = 2, labeller = as_labeller(strategy_labels))
-
-print(PSA_plot)
-
-
-# Save the plot with specified dimensions and resolution
-png(here("Plots","PSA_scatter_plot.png"), width = 10, height = 8, units = "in", res = 350)
-print(PSA_plot)
+# Combine tornado plots for all strategies
+library(ggpubr)
+combined_tornado <- ggarrange(tornado_S1, tornado_S2,
+                              tornado_S3, tornado_S4,
+                              ncol = 2, nrow = 2, align = "hv")
+if (interactive()) print(combined_tornado)
+# Save the combined tornado plot
+dir.create(here("outputs", "figures"), recursive = TRUE, showWarnings = FALSE)
+pdf(here("outputs", "figures", "combined_tornado_plots.pdf"), width = 18, height = 12)
+print(combined_tornado)
 dev.off()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+png(here("outputs", "figures", "combined_tornado_plots.png"), width = 14, height = 11, units = "in", res = 350)
+print(combined_tornado)
+dev.off()
 
 
 

@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 .positai
+.DS_Store
+.Rproj.user/
+Rplots.pdf
