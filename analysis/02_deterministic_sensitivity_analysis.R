@@ -60,11 +60,9 @@ p_early_presentation <- BetaModVar$new(
   "Probability of early presentation", "", 
   alpha = 80, beta = 20)
 
-p_thalassaemia_trait_W <- BetaModVar$new(
-  "Probability of woman having trait", "", alpha = 160, beta = 840)
+p_thalassaemia_trait_W <- 0.16
 
-p_thalassaemia_trait_M <- BetaModVar$new(
-  "Probability of man having trait", "", alpha = 160, beta = 840)
+p_thalassaemia_trait_M <- 0.16
 
 p_one_partner_trait <- 0.2688
 
@@ -249,7 +247,8 @@ ep <- dt$evaluate(by = "path")
 dt$tornado(index = e44, ref = e45, outcome = "ICER", draw = interactive())
 tornado_S1 <- plot_tornado_labeled(dt, e44, e45, outcome = "ICER",
                      Label = "\nStrategy 1: Post-conception screening",
-                     xmax = 500000, xmin = 100000)
+                     xmax = 500000, xmin = 100000,
+                     exclude_parameters = "Abortion cost")
 if (interactive()) print(tornado_S1)
 
 
@@ -643,7 +642,8 @@ ep4 <- dt4$evaluate(by = "path")
 dt4$tornado(index = e111, ref = e112, outcome = "ICER", draw = interactive())
 tornado_S4 <- plot_tornado_labeled(dt4, e111, e112, outcome = "ICER",
                       Label = "Strategy 4: Combination of \npre- and post-conception screening",
-                      xmax = 350000, xmin = 50000)
+                      xmax = 350000, xmin = 50000,
+                      exclude_parameters = "Abortion cost")
 if (interactive()) print(tornado_S4)
 
 # Threshold analysis
@@ -688,7 +688,8 @@ safe_threshold(dt4,
 library(ggpubr)
 combined_tornado <- ggarrange(tornado_S1, tornado_S2,
                               tornado_S3, tornado_S4,
-                              ncol = 2, nrow = 2, align = "hv")
+                              ncol = 2, nrow = 2, align = "hv",
+                              common.legend = TRUE, legend = "bottom")
 if (interactive()) print(combined_tornado)
 # Save the combined tornado plot
 dir.create(here("outputs", "figures"), recursive = TRUE, showWarnings = FALSE)
@@ -699,8 +700,6 @@ dev.off()
 png(here("outputs", "figures", "combined_tornado_plots.png"), width = 14, height = 11, units = "in", res = 350)
 print(combined_tornado)
 dev.off()
-
-
 
 
 
