@@ -276,7 +276,7 @@ publication_plot <- ggplot(
     caption = paste0(
       "Smaller coloured points represent PSA simulations\n",
       "Each contour encloses the 95% joint uncertainty region\n",
-      "Larger white circles denote PSA medians"
+      "Larger white circles denote median incremental costs and outcomes from the PSA"
     )
   ) +
   theme_classic(base_size = 11) +
