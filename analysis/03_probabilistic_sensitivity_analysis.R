@@ -109,7 +109,7 @@ psa_plot <- ggplot(
   scale_y_continuous(labels = label_comma(), expand = c(0, 0), limits = c(0, 12000)) +
   facet_wrap(~strategy, ncol = 2, labeller = as_labeller(strategy_labels)) +
   labs(
-    x = "Severe thalassaemia births averted per 1,000 screened",
+    x = "Severe thalassaemia births averted per 1,000 couples screened",
     y = "Incremental cost (THB)"
   ) +
   theme_bw(base_size = 18) +
@@ -271,7 +271,7 @@ publication_plot <- ggplot(
   ) +
   coord_cartesian(xlim = c(-2.5, 8), ylim = c(0, 12000)) +
   labs(
-    x = "Severe thalassaemia births averted per 1,000 screened",
+    x = "Severe thalassaemia births averted per 1,000 couples screened",
     y = "Incremental cost (THB)",
     caption = paste0(
       "Smaller coloured points represent PSA simulations\n",
