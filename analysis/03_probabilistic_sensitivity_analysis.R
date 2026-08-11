@@ -274,9 +274,9 @@ publication_plot <- ggplot(
     x = "Severe thalassaemia births averted per 1,000 screened",
     y = "Incremental cost (THB)",
     caption = paste0(
-      "Points represent PSA simulations\n",
+      "Smaller coloured points represent PSA simulations\n",
       "Each contour encloses the 95% joint uncertainty region\n",
-      "Circles denote PSA medians"
+      "Larger white circles denote PSA medians"
     )
   ) +
   theme_classic(base_size = 11) +
