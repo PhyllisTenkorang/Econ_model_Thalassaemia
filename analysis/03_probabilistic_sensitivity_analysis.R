@@ -276,7 +276,8 @@ publication_plot <- ggplot(
     x = "Severe thalassaemia births averted per 1,000 screened",
     y = "Incremental cost (THB)",
     caption = paste0(
-      "Points represent PSA simulations; each contour encloses the 95% joint uncertainty region. ",
+      "Points represent PSA simulations.\n",
+      "Each contour encloses the 95% joint uncertainty region.\n",
       "Circles denote PSA medians."
     )
   ) +
