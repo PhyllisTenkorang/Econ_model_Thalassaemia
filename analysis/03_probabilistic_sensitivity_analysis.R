@@ -143,28 +143,65 @@ publication_psa <- psa_results |>
   mutate(births_averted_per_1000 = births_averted_proportion * 1000)
 publication_medians <- medians |>
   mutate(median_effect_per_1000 = median_effect * 1000)
-publication_base <- baseline_results |>
-  mutate(base_effect_per_1000 = births_averted_proportion * 1000)
 publication_ce <- cost_effectiveness |>
-  mutate(label = paste0("P(cost-effective) = ", round(probability * 100), "%"))
+  mutate(label = paste0(
+    "Probability cost-effective: ", round(probability_low * 100),
+    "%-", round(probability_high * 100), "%"
+  ))
+
+# Return the boundary of the smallest kernel-density region containing 95% of
+# the estimated joint distribution of incremental effects and costs.
+kde_hdr_contour <- function(data, probability = 0.95, grid_size = 200L) {
+  x <- data$births_averted_per_1000
+  y <- data$incremental_cost_thb
+  x_padding <- diff(range(x)) * 0.1
+  y_padding <- diff(range(y)) * 0.1
+  density <- MASS::kde2d(
+    x,
+    y,
+    n = grid_size,
+    lims = c(
+      min(x) - x_padding, max(x) + x_padding,
+      min(y) - y_padding, max(y) + y_padding
+    )
+  )
+  ordered_density <- sort(as.vector(density$z), decreasing = TRUE)
+  cutoff <- ordered_density[
+    which(cumsum(ordered_density) / sum(ordered_density) >= probability)[1L]
+  ]
+  boundaries <- contourLines(density$x, density$y, density$z, levels = cutoff)
+
+  do.call(rbind, lapply(seq_along(boundaries), function(i) {
+    data.frame(
+      births_averted_per_1000 = boundaries[[i]]$x,
+      incremental_cost_thb = boundaries[[i]]$y,
+      contour_group = paste(data$strategy[[1L]], i, sep = "_"),
+      strategy = data$strategy[[1L]],
+      stringsAsFactors = FALSE
+    )
+  }))
+}
+
+publication_contours <- publication_psa |>
+  group_split(strategy) |>
+  lapply(kde_hdr_contour) |>
+  bind_rows()
 
 wtp_lines <- data.frame(
   threshold = factor(
-    c("Lower WTP", "Primary WTP", "Upper WTP"),
-    levels = c("Lower WTP", "Primary WTP", "Upper WTP")
+    paste0(
+      c("Lower", "Primary", "Upper"), ": THB ",
+      scales::comma(round(c(wtp$low, wtp$base, wtp$high))),
+      " per birth averted"
+    ),
+    levels = paste0(
+      c("Lower", "Primary", "Upper"), ": THB ",
+      scales::comma(round(c(wtp$low, wtp$base, wtp$high))),
+      " per birth averted"
+    )
   ),
   slope = c(wtp$low, wtp$base, wtp$high) / 1000,
   intercept = 0
-)
-wtp_labels <- transform(
-  wtp_lines,
-  strategy = "Strategy 4: Combined screening",
-  x = 6.35,
-  y = slope * 6.35,
-  label = paste0(
-    threshold, ": ", scales::comma(round(slope * 1000)),
-    " THB/birth averted"
-  )
 )
 
 publication_plot <- ggplot(
@@ -180,10 +217,10 @@ publication_plot <- ggplot(
     linewidth = 0.65
   ) +
   geom_point(size = 1.15, alpha = 0.16) +
-  stat_density_2d(
-    contour_var = "ndensity",
-    breaks = c(0.15, 0.5),
-    linewidth = 0.65,
+  geom_path(
+    data = publication_contours,
+    aes(group = contour_group),
+    linewidth = 0.8,
     show.legend = FALSE
   ) +
   geom_point(
@@ -195,14 +232,6 @@ publication_plot <- ggplot(
     stroke = 0.9,
     show.legend = FALSE
   ) +
-  geom_point(
-    data = publication_base,
-    aes(x = base_effect_per_1000, y = incremental_cost_thb),
-    shape = 4,
-    size = 4.2,
-    stroke = 1,
-    show.legend = FALSE
-  ) +
   geom_text(
     data = publication_ce,
     aes(x = -Inf, y = Inf, label = label),
@@ -212,24 +241,21 @@ publication_plot <- ggplot(
     size = 3.2,
     color = "grey15"
   ) +
-  geom_label(
-    data = wtp_labels,
-    aes(x = x, y = y, label = label),
-    inherit.aes = FALSE,
-    hjust = 1,
-    vjust = -0.2,
-    size = 2.35,
-    label.size = 0,
-    label.padding = unit(0.08, "lines"),
-    color = "grey25",
-    fill = scales::alpha("white", 0.78)
-  ) +
   facet_wrap(~strategy, ncol = 2, labeller = as_labeller(publication_labels)) +
   scale_color_manual(values = publication_colors, guide = "none") +
   scale_fill_manual(values = publication_colors, guide = "none") +
   scale_linetype_manual(
-    values = c("Lower WTP" = "dotted", "Primary WTP" = "solid", "Upper WTP" = "dashed"),
-    guide = "none"
+    values = setNames(
+      c("dotted", "solid", "dashed"),
+      levels(wtp_lines$threshold)
+    ),
+    name = "Willingness-to-pay thresholds",
+    guide = guide_legend(
+      nrow = 3,
+      byrow = TRUE,
+      title.position = "top",
+      title.hjust = 0
+    )
   ) +
   scale_x_continuous(breaks = seq(-2, 8, 2), labels = label_number()) +
   scale_y_continuous(
@@ -242,8 +268,8 @@ publication_plot <- ggplot(
     x = "Severe thalassaemia births averted per 1,000 screened",
     y = "Incremental cost (THB)",
     caption = paste0(
-      "Points represent PSA simulations; contours show kernel-density levels.\n",
-      "Circles denote PSA medians; crosses denote deterministic base-case estimates."
+      "Points represent PSA simulations; each contour encloses the 95% joint uncertainty region. ",
+      "Circles denote PSA medians."
     )
   ) +
   theme_classic(base_size = 11) +
@@ -253,6 +279,12 @@ publication_plot <- ggplot(
     panel.border = element_rect(color = "grey35", fill = NA, linewidth = 0.4),
     panel.spacing = unit(8, "pt"),
     axis.title = element_text(face = "bold"),
+    legend.position = "bottom",
+    legend.justification = "left",
+    legend.title = element_text(face = "bold", size = 9),
+    legend.text = element_text(size = 8.5),
+    legend.key.width = unit(22, "pt"),
+    legend.margin = margin(t = -2, b = 0),
     plot.caption = element_text(size = 8.5, hjust = 0, color = "grey25"),
     plot.margin = margin(8, 10, 8, 8)
   )
@@ -261,7 +293,7 @@ ggsave(
   file.path(figure_dir, "PSA_scatter_plot_publication.png"),
   publication_plot,
   width = 180,
-  height = 145,
+  height = 155,
   units = "mm",
   dpi = 600,
   bg = "white"
@@ -270,7 +302,7 @@ ggsave(
   file.path(figure_dir, "PSA_scatter_plot_publication.pdf"),
   publication_plot,
   width = 180,
-  height = 145,
+  height = 155,
   units = "mm",
   bg = "white"
 )
