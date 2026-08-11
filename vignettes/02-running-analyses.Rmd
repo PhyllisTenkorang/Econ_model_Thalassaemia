@@ -54,5 +54,7 @@ source("analysis/04_extract_uncertainty_results.R")
 - `outputs/tables/budget_impact_results.csv`
 - `outputs/tables/prevalence_analysis_results.csv`
 - `outputs/tables/prevalence_thresholds.csv`
-- `outputs/figures/PSA_scatter_plot.png`
+- `outputs/figures/PSA_scatter_plot_publication.pdf` (publication-quality vector figure)
+- `outputs/figures/PSA_scatter_plot_publication.png` (high-resolution publication figure)
+- `outputs/figures/PSA_scatter_plot.png` (original figure retained for comparison)
 - `outputs/figures/combined_tornado_plots.png`

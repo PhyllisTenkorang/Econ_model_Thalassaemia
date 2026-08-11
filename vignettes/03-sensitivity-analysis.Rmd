@@ -31,6 +31,20 @@ The PSA output reports, for incremental cost, births averted, and the ICER:
 
 Births averted are retained as proportions in the CSV output.
 
+The publication cost-effectiveness plane is saved as
+`outputs/figures/PSA_scatter_plot_publication.pdf` and
+`outputs/figures/PSA_scatter_plot_publication.png`. For each strategy, it
+shows incremental costs and severe thalassaemia births averted per 1,000
+couples screened. Smaller coloured points represent PSA simulations, the
+larger white circle marks the median incremental cost and outcome, and the
+single contour encloses the 95% joint uncertainty region.
+
+The lower, average, and upper cost-effectiveness thresholds are shown as
+reference lines. Each panel reports the probability of being cost-effective
+at the average threshold, followed by the range obtained using the lower and
+upper thresholds. The original `outputs/figures/PSA_scatter_plot.png` is
+retained for comparison.
+
 ## Strategy 1 ICER uncertainty
 
 For Strategy 1, the simulated incremental-effect distribution crosses zero.
