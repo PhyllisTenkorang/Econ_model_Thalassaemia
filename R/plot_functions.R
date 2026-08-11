@@ -82,8 +82,18 @@ plot_tornado_labeled <- function(
   span <- xmax - xmin
 
   ggplot(plot_data, aes(y = Description)) +
-    geom_segment(aes(x = low, xend = high, yend = Description), 
-                    linewidth = 8, alpha = 0.8, col = '#2a9d8f') +
+    geom_segment(
+      aes(x = baseline_icer, xend = outcome.min, yend = Description),
+      linewidth = 8,
+      alpha = 0.8,
+      color = "#0072B2"
+    ) +
+    geom_segment(
+      aes(x = baseline_icer, xend = outcome.max, yend = Description),
+      linewidth = 8,
+      alpha = 0.8,
+      color = "#D55E00"
+    ) +
     geom_vline(xintercept = baseline_icer, linetype = '31', col = '#C40C0C') +
     geom_text(
       data = label_data,
