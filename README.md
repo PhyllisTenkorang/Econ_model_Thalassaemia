@@ -3,10 +3,10 @@
 This project evaluates the cost-effectiveness and budget impact of four
 thalassaemia screening strategies in Thailand against "no screening":
 
-1. Post-conception screening.
-2. Pre-conception CBC and Hb typing with targeted DNA analysis.
-3. Pre-conception universal DNA analysis.
-4. Combined pre- and post-conception screening.
+1. Post-conception screening
+2. Pre-conception screening using CBC and Hb typing with targeted DNA analysis
+3. Pre-conception screening using universal DNA analysis
+4. Combined pre- and post-conception screening
 
 The primary outcome is the incremental screening cost per severe thalassaemia
 birth averted (in Thai Baht).
