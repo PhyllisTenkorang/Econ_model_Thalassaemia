@@ -200,11 +200,11 @@ publication_contours <- publication_psa |>
 wtp_lines <- data.frame(
   threshold = factor(
     paste0(
-      c("Lower", "Primary", "Upper"), ": ",
+      c("Lower", "Average", "Upper"), ": ",
       scales::comma(round(c(wtp$low, wtp$base, wtp$high)))
     ),
     levels = paste0(
-      c("Lower", "Primary", "Upper"), ": ",
+      c("Lower", "Average", "Upper"), ": ",
       scales::comma(round(c(wtp$low, wtp$base, wtp$high)))
     )
   ),
