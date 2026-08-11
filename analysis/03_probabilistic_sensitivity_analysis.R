@@ -129,12 +129,12 @@ ggsave(
 # Publication-style alternative. The original figure above is retained for
 # direct comparison.
 publication_labels <- c(
-  "Strategy 1: Post-conception screening" = "A  Post-conception",
+  "Strategy 1: Post-conception screening" = "Strategy 1",
   "Strategy 2: Pre-conception screening, targeted DNA" =
-    "B  Targeted pre-conception",
+    "Strategy 2",
   "Strategy 3: Pre-conception screening, universal DNA" =
-    "C  Universal pre-conception",
-  "Strategy 4: Combined screening" = "D  Combined screening"
+    "Strategy 3",
+  "Strategy 4: Combined screening" = "Strategy 4"
 )
 publication_colors <- c("#0072B2", "#E69F00", "#009E73", "#CC79A7")
 names(publication_colors) <- names(publication_labels)
