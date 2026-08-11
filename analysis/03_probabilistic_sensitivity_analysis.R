@@ -146,8 +146,8 @@ publication_medians <- medians |>
 publication_ce <- cost_effectiveness |>
   mutate(label = paste0(
     "Probability cost-effective: ", round(probability * 100),
-    "%\nRange: ", round(probability_low * 100),
-    "% to ", round(probability_high * 100), "%"
+    "%  (range: ", round(probability_low * 100),
+    "% to ", round(probability_high * 100), "%)"
   ))
 
 # Return the boundary of the smallest kernel-density region containing 95% of
@@ -243,8 +243,8 @@ publication_plot <- ggplot(
     aes(x = -Inf, y = Inf, label = label),
     inherit.aes = FALSE,
     hjust = -0.06,
-    vjust = 1.2,
-    size = 3,
+    vjust = 1.45,
+    size = 2.55,
     color = "grey15"
   ) +
   facet_wrap(~strategy, ncol = 2, labeller = as_labeller(publication_labels)) +
@@ -274,9 +274,9 @@ publication_plot <- ggplot(
     x = "Severe thalassaemia births averted per 1,000 screened",
     y = "Incremental cost (THB)",
     caption = paste0(
-      "Points represent PSA simulations.\n",
-      "Each contour encloses the 95% joint uncertainty region.\n",
-      "Circles denote PSA medians."
+      "Points represent PSA simulations\n",
+      "Each contour encloses the 95% joint uncertainty region\n",
+      "Circles denote PSA medians"
     )
   ) +
   theme_classic(base_size = 11) +
