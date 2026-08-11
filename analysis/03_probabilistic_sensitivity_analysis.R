@@ -145,13 +145,19 @@ publication_medians <- medians |>
   mutate(median_effect_per_1000 = median_effect * 1000)
 publication_ce <- cost_effectiveness |>
   mutate(label = paste0(
-    "Probability cost-effective: ", round(probability_low * 100),
-    "%-", round(probability_high * 100), "%"
+    "Probability cost-effective: ", round(probability * 100),
+    "%\nRange: ", round(probability_low * 100),
+    "% to ", round(probability_high * 100), "%"
   ))
 
 # Return the boundary of the smallest kernel-density region containing 95% of
 # the estimated joint distribution of incremental effects and costs.
-kde_hdr_contour <- function(data, probability = 0.95, grid_size = 200L) {
+kde_hdr_contour <- function(
+  data,
+  probability = 0.95,
+  grid_size = 300L,
+  bandwidth_adjustment = 1.35
+) {
   x <- data$births_averted_per_1000
   y <- data$incremental_cost_thb
   x_padding <- diff(range(x)) * 0.1
@@ -160,6 +166,10 @@ kde_hdr_contour <- function(data, probability = 0.95, grid_size = 200L) {
     x,
     y,
     n = grid_size,
+    h = c(
+      MASS::bandwidth.nrd(x),
+      MASS::bandwidth.nrd(y)
+    ) * bandwidth_adjustment,
     lims = c(
       min(x) - x_padding, max(x) + x_padding,
       min(y) - y_padding, max(y) + y_padding
@@ -190,14 +200,12 @@ publication_contours <- publication_psa |>
 wtp_lines <- data.frame(
   threshold = factor(
     paste0(
-      c("Lower", "Primary", "Upper"), ": THB ",
-      scales::comma(round(c(wtp$low, wtp$base, wtp$high))),
-      " per birth averted"
+      c("Lower", "Primary", "Upper"), ": ",
+      scales::comma(round(c(wtp$low, wtp$base, wtp$high)))
     ),
     levels = paste0(
-      c("Lower", "Primary", "Upper"), ": THB ",
-      scales::comma(round(c(wtp$low, wtp$base, wtp$high))),
-      " per birth averted"
+      c("Lower", "Primary", "Upper"), ": ",
+      scales::comma(round(c(wtp$low, wtp$base, wtp$high)))
     )
   ),
   slope = c(wtp$low, wtp$base, wtp$high) / 1000,
@@ -236,9 +244,9 @@ publication_plot <- ggplot(
     data = publication_ce,
     aes(x = -Inf, y = Inf, label = label),
     inherit.aes = FALSE,
-    hjust = -0.08,
-    vjust = 1.45,
-    size = 3.2,
+    hjust = -0.06,
+    vjust = 1.2,
+    size = 3,
     color = "grey15"
   ) +
   facet_wrap(~strategy, ncol = 2, labeller = as_labeller(publication_labels)) +
@@ -249,7 +257,7 @@ publication_plot <- ggplot(
       c("dotted", "solid", "dashed"),
       levels(wtp_lines$threshold)
     ),
-    name = "Willingness-to-pay thresholds",
+    name = "WTP threshold (THB per birth averted)",
     guide = guide_legend(
       nrow = 3,
       byrow = TRUE,
