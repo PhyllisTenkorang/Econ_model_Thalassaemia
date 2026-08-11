@@ -255,7 +255,7 @@ publication_plot <- ggplot(
       c("dotted", "solid", "dashed"),
       levels(wtp_lines$threshold)
     ),
-    name = "Cost-effectiveness threshold (THB per birth averted)",
+    name = "Cost-effectiveness thresholds (THB per birth averted):",
     guide = guide_legend(
       nrow = 3,
       byrow = TRUE,
