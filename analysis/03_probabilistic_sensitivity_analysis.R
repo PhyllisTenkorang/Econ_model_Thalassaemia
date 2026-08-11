@@ -216,8 +216,6 @@ publication_plot <- ggplot(
   publication_psa,
   aes(x = births_averted_per_1000, y = incremental_cost_thb, color = strategy)
 ) +
-  geom_hline(yintercept = 0, color = "grey45", linewidth = 0.35) +
-  geom_vline(xintercept = 0, color = "grey45", linewidth = 0.35) +
   geom_abline(
     data = wtp_lines,
     aes(slope = slope, intercept = intercept, linetype = threshold),
