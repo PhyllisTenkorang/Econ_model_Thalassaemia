@@ -5,16 +5,16 @@ output: html_document
 
 ## Objective
 
-The model estimates the incremental cost per severe thalassaemia birth averted
-for four screening strategies in Thailand. Each strategy is compared with no
-screening.
+The model estimates the incremental screening cost per severe thalassaemia birth averted
+for four screening strategies in Thailand. Each strategy is compared with "no
+screening".
 
 ## Strategies
 
-1. Post-conception screening.
-2. Pre-conception CBC and Hb typing with targeted DNA analysis.
-3. Pre-conception universal DNA analysis.
-4. Combined pre- and post-conception screening.
+1. Post-conception screening
+2. Pre-conception screening using CBC and Hb typing with targeted DNA analysis
+3. Pre-conception screening using universal DNA analysis
+4. Combined pre- and post-conception screening
 
 ## Outcomes
 
