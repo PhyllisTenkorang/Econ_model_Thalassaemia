@@ -1,4 +1,4 @@
-# Economic model of thalassaemia screening in Thailand
+# Economic model for thalassaemia screening strategies in Thailand
 
 This project evaluates the cost-effectiveness and budget impact of four
 thalassaemia screening strategies in Thailand against "no screening":
