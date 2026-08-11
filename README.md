@@ -38,7 +38,6 @@ data/model_inputs/ Model inputs and source material
 outputs/           Generated tables and figures
 tests/             Reproducibility checks
 vignettes/         Detailed model and analysis documentation
-archive/           Earlier project scripts retained for reference
 ```
 
 ## Documentation
