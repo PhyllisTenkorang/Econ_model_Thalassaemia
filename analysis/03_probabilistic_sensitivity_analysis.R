@@ -284,6 +284,8 @@ publication_plot <- ggplot(
     strip.background = element_rect(fill = "grey94", color = "grey35", linewidth = 0.4),
     strip.text = element_text(face = "bold", hjust = 0, margin = margin(5, 6, 5, 6)),
     panel.border = element_rect(color = "grey35", fill = NA, linewidth = 0.4),
+    panel.grid.major = element_line(color = "grey90", linewidth = 0.3),
+    panel.grid.minor = element_blank(),
     panel.spacing = unit(8, "pt"),
     axis.title = element_text(face = "bold"),
     legend.position = "bottom",
