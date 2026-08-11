@@ -49,3 +49,8 @@ archive/           Earlier project scripts retained for reference
 - [Carrier-prevalence analysis](vignettes/04-prevalence-analysis.Rmd)
 
 The main numerical outputs are validated by `tests/verify_results.R`.
+
+Model structure is read once from the CSV inputs by `R/model_builders.R`.
+Base-case, DSA, and PSA parameters are created centrally by
+`R/model_parameters.R`, preventing the analysis scripts from maintaining
+separate copies of the four decision trees.

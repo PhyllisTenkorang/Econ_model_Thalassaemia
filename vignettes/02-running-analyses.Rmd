@@ -49,6 +49,7 @@ source("analysis/04_extract_uncertainty_results.R")
 
 - `outputs/tables/base_case_results.csv`
 - `outputs/tables/DSA_parameter_bounds.csv`
+- `outputs/tables/DSA_thresholds.csv`
 - `outputs/tables/PSA_95_uncertainty_intervals.csv`
 - `outputs/tables/budget_impact_results.csv`
 - `outputs/tables/prevalence_analysis_results.csv`

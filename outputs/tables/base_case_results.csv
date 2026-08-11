@@ -1,5 +1,5 @@
-"","Incremental Costs","Proportion of severe Thalassaemia births averted","ICER"
-"Post-conception screening with/without abortion",677.300096,0.001989632,340414.758106022
-"Pre-conception screening (Option 1)",933.6,0.0032,291750
-"Pre-conception screening (Option 2)",6000,0.0032,1875000
-"Combination of pre and post-conception screening",978.16256,0.00444352,220132.363531615
+"strategy","incremental_cost_thb","births_averted_proportion","icer_thb_per_birth_averted"
+"Strategy 1: Post-conception screening",677.300096,0.00198963200000002,340414.758106018
+"Strategy 2: Pre-conception screening, targeted DNA",933.6,0.00319999999999998,291750.000000002
+"Strategy 3: Pre-conception screening, universal DNA",6000,0.00319999999999998,1875000.00000001
+"Strategy 4: Combined screening",978.16256,0.00444352000000003,220132.363531613

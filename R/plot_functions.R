@@ -1,15 +1,3 @@
-# get_action_by_label <- function(tree, label) {
-#   dns <- tree$decision_nodes(what = "node")
-#   for (d in dns) {
-#     acts <- tree$actions(d)
-#     labs <- vapply(acts, function(a) a$label(), FUN.VALUE = character(1))
-#     i <- which(labs == label)
-#     if (length(i)) return(acts[[i[1]]])
-#   }
-#   stop(sprintf("No action with label '%s' found.", label))
-# }
-
-
 format_val <- function(x) {
   if (is.numeric(x)) {
     ifelse(x <= 1, scales::number(x, accuracy = 0.001),
@@ -126,12 +114,7 @@ plot_tornado_labeled <- function(
       axis.text.y = element_text(size = 15),
       legend.position = "bottom",
       legend.title = element_text(size = 13),
-      legend.text = element_text(size = 12)
+      legend.text = element_text(size = 12),
+      plot.margin = margin(t = 24, r = 10, b = 10, l = 10)
     )
 }
-
-
-# Example call for your first tree:
-# plot_tornado_labeled(dt, e44, e45, outcome = "ICER",
-#                      Label = "Strategy 1: Post-conception screening",
-#                      xmax = 500000, xmin = 200000)

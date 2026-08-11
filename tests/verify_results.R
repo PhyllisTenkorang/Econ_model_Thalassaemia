@@ -5,10 +5,12 @@ dsa_file <- here("outputs", "tables", "DSA_parameter_bounds.csv")
 psa_file <- here("outputs", "tables", "PSA_95_uncertainty_intervals.csv")
 prevalence_file <- here("outputs", "tables", "prevalence_analysis_results.csv")
 threshold_file <- here("outputs", "tables", "prevalence_thresholds.csv")
+dsa_threshold_file <- here("outputs", "tables", "DSA_thresholds.csv")
 
 stopifnot(
   file.exists(baseline_file), file.exists(dsa_file), file.exists(psa_file),
-  file.exists(prevalence_file), file.exists(threshold_file)
+  file.exists(prevalence_file), file.exists(threshold_file),
+  file.exists(dsa_threshold_file)
 )
 
 baseline <- read.csv(baseline_file, check.names = FALSE)
@@ -18,13 +20,17 @@ expected_icer <- expected_cost / expected_effect
 
 stopifnot(
   nrow(baseline) == 4L,
-  isTRUE(all.equal(baseline[["Incremental Costs"]], expected_cost, tolerance = 1e-10)),
+  isTRUE(all.equal(baseline$incremental_cost_thb, expected_cost, tolerance = 1e-10)),
   isTRUE(all.equal(
-    baseline[["Proportion of severe Thalassaemia births averted"]],
+    baseline$births_averted_proportion,
     expected_effect,
     tolerance = 1e-10
   )),
-  isTRUE(all.equal(baseline[["ICER"]], expected_icer, tolerance = 1e-10))
+  isTRUE(all.equal(
+    baseline$icer_thb_per_birth_averted,
+    expected_icer,
+    tolerance = 1e-10
+  ))
 )
 
 dsa <- read.csv(dsa_file, check.names = FALSE)
@@ -34,8 +40,15 @@ stopifnot(
     "lower_2.5_percentile", "upper_97.5_percentile"
   ) %in% names(dsa)),
   all(dsa$lower_2.5_percentile <= dsa$base_value),
-  all(dsa$base_value <= dsa$upper_97.5_percentile)
+  all(dsa$base_value <= dsa$upper_97.5_percentile),
+  !any(dsa$parameter %in% c(
+    "Probability of man having trait",
+    "Probability of woman having trait"
+  ))
 )
+
+dsa_thresholds <- read.csv(dsa_threshold_file, check.names = FALSE)
+stopifnot(nrow(dsa_thresholds) == 12L, sum(is.na(dsa_thresholds$threshold)) == 2L)
 
 psa <- read.csv(psa_file, check.names = FALSE)
 stopifnot(

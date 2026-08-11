@@ -1,0 +1,13 @@
+"strategy","parameter","lower","upper","wtp_base_thb","threshold"
+"Strategy 1: Post-conception screening","CBC & Hb typing cost per person",50,1000,683041.125804335,977.669143676758
+"Strategy 1: Post-conception screening","Probability of couple agreeing to PND",0.1,0.9,683041.125804335,0.26875
+"Strategy 1: Post-conception screening","Probability of couple agreeing to abortion",0.1,0.9,683041.125804335,0.33125
+"Strategy 1: Post-conception screening","Probability of early presentation",0.1,0.9,683041.125804335,0.38125
+"Strategy 2: Pre-conception screening, targeted DNA","CBC & Hb typing cost per couple",50,5000,683041.125804335,2032.13186264038
+"Strategy 2: Pre-conception screening, targeted DNA","DNA analysis cost",10,1e+05,683041.125804335,54911.3961273432
+"Strategy 2: Pre-conception screening, targeted DNA","Probability of couple reconsidering decision to conceive",0.1,0.99,683041.125804335,0.218203125
+"Strategy 3: Pre-conception screening, universal DNA","DNA analysis cost",500,10000,683041.125804335,2185.73141098022
+"Strategy 3: Pre-conception screening, universal DNA","Probability of couple reconsidering decision to conceive",0.1,0.99,683041.125804335,NA
+"Strategy 4: Combined screening","Probability of couple reconsidering decision to conceive",0,1,683041.125804335,NA
+"Strategy 4: Combined screening","DNA analysis cost",50,1e+05,683041.125804335,86349.3840068579
+"Strategy 4: Combined screening","CBC & Hb typing cost per couple",50,5000,683041.125804335,2836.95249557495

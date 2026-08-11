@@ -6,17 +6,15 @@
 "Strategy 1: Post-conception screening","Probability of couple agreeing to abortion",0.67,0.575315153043234,0.758243484203968
 "Strategy 1: Post-conception screening","Probability of couple agreeing to PND",0.58,0.482444068822434,0.674523757509782
 "Strategy 1: Post-conception screening","Probability of early presentation",0.8,0.716632370782925,0.872015267390736
-"Strategy 1: Post-conception screening","Probability of man having trait",0.16,0.137944858374603,0.18334302404078
-"Strategy 1: Post-conception screening","Probability of woman having trait",0.16,0.137944858374603,0.18334302404078
 "Strategy 2: Pre-conception screening, targeted DNA","CBC & Hb typing cost per couple",780,504.774873652275,1114.1550449251
 "Strategy 2: Pre-conception screening, targeted DNA","DNA analysis cost",6000,3882.88364347904,8570.42342250077
 "Strategy 2: Pre-conception screening, targeted DNA","Probability of couple reconsidering decision to conceive",0.5,0.402697916590058,0.597302083409943
 "Strategy 3: Pre-conception screening, universal DNA","DNA analysis cost",6000,3882.88364347904,8570.42342250077
 "Strategy 3: Pre-conception screening, universal DNA","Probability of couple reconsidering decision to conceive",0.5,0.402697916590058,0.597302083409943
-"Strategy 4: Combined pre- and post-conception screening","Abortion cost",3000,1941.44182173952,4285.21171125038
-"Strategy 4: Combined pre- and post-conception screening","CBC & Hb typing cost per couple",780,504.774873652275,1114.1550449251
-"Strategy 4: Combined pre- and post-conception screening","DNA analysis cost",6000,3882.88364347904,8570.42342250077
-"Strategy 4: Combined pre- and post-conception screening","PND cost",5500,3559.31000652245,7856.2214706257
-"Strategy 4: Combined pre- and post-conception screening","Probability of couple agreeing to abortion",0.67,0.575315153043234,0.758243484203968
-"Strategy 4: Combined pre- and post-conception screening","Probability of couple agreeing to PND",0.58,0.482444068822434,0.674523757509782
-"Strategy 4: Combined pre- and post-conception screening","Probability of couple reconsidering decision to conceive",0.5,0.402697916590058,0.597302083409943
+"Strategy 4: Combined screening","Abortion cost",3000,1941.44182173952,4285.21171125038
+"Strategy 4: Combined screening","CBC & Hb typing cost per couple",780,504.774873652275,1114.1550449251
+"Strategy 4: Combined screening","DNA analysis cost",6000,3882.88364347904,8570.42342250077
+"Strategy 4: Combined screening","PND cost",5500,3559.31000652245,7856.2214706257
+"Strategy 4: Combined screening","Probability of couple agreeing to abortion",0.67,0.575315153043234,0.758243484203968
+"Strategy 4: Combined screening","Probability of couple agreeing to PND",0.58,0.482444068822434,0.674523757509782
+"Strategy 4: Combined screening","Probability of couple reconsidering decision to conceive",0.5,0.402697916590058,0.597302083409943
