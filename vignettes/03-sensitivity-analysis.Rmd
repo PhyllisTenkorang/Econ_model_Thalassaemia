@@ -42,12 +42,4 @@ ellipse shows the modelled 95% joint uncertainty region.
 The lower, average, and upper cost-effectiveness thresholds are shown as
 reference lines. Each panel reports the probability of being cost-effective
 at the average threshold, followed by the range obtained using the lower and
-upper thresholds. The original `outputs/figures/PSA_scatter_plot.png` is
-retained for comparison.
-
-## Strategy 1 ICER uncertainty
-
-Strategy 1 uses the same sampled female and male carrier prevalences to derive
-the carrier-couple probabilities in both arms. This preserves the dependence
-between the screening and no-screening outcomes and prevents screening from
-producing more severe thalassaemia births than no screening in a PSA draw.
+upper thresholds.

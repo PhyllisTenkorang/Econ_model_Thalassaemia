@@ -28,17 +28,6 @@ strategy_1_psa <- psa_results[
 stopifnot(all(strategy_1_psa$births_averted_proportion >= -1e-12))
 
 wtp <- calculate_wtp_thresholds()
-strategy_labels <- c(
-  "Strategy 1: Post-conception screening" = "Strategy 1: Post-conception",
-  "Strategy 2: Pre-conception screening, targeted DNA" =
-    "Strategy 2: Pre-conception, targeted",
-  "Strategy 3: Pre-conception screening, universal DNA" =
-    "Strategy 3: Pre-conception, universal",
-  "Strategy 4: Combined screening" = "Strategy 4: Combined screening"
-)
-strategy_colors <- c("#EA5B6F", "#F79A19", "#3338A0", "#9112BC")
-names(strategy_colors) <- names(strategy_labels)
-
 medians <- psa_results |>
   group_by(strategy) |>
   summarise(
@@ -65,74 +54,8 @@ cost_effectiveness <- psa_results |>
     y = Inf
   )
 
-psa_plot <- ggplot(
-  psa_results,
-  aes(x = births_averted_proportion, y = incremental_cost_thb, color = strategy)
-) +
-  geom_point(size = 1.5, alpha = 0.15) +
-  stat_ellipse(type = "norm", level = 0.8, linewidth = 0.7) +
-  geom_point(
-    data = medians,
-    aes(x = median_effect, y = median_cost, fill = strategy),
-    size = 4,
-    shape = 21,
-    color = "white",
-    stroke = 1.2
-  ) +
-  geom_abline(intercept = 0, slope = wtp$base, color = "gray30", linewidth = 1.2) +
-  geom_abline(
-    intercept = 0,
-    slope = wtp$low,
-    color = "gray30",
-    linetype = "21",
-    linewidth = 1,
-    alpha = 0.5
-  ) +
-  geom_abline(
-    intercept = 0,
-    slope = wtp$high,
-    color = "gray30",
-    linetype = "21",
-    linewidth = 1,
-    alpha = 0.5
-  ) +
-  geom_text(
-    data = cost_effectiveness,
-    aes(x = x, y = y, label = label),
-    inherit.aes = FALSE,
-    size = 4.25,
-    hjust = -0.025,
-    vjust = 1.8
-  ) +
-  scale_color_manual(values = strategy_colors, labels = strategy_labels, name = NULL) +
-  scale_fill_manual(values = strategy_colors, labels = strategy_labels, name = NULL) +
-  scale_x_continuous(
-    labels = function(x) comma(x * 1000),
-    expand = expansion(mult = c(0, 0.02)),
-    limits = c(0, 0.008)
-  ) +
-  scale_y_continuous(labels = label_comma(), expand = c(0, 0), limits = c(0, 12000)) +
-  facet_wrap(~strategy, ncol = 2, labeller = as_labeller(strategy_labels)) +
-  labs(
-    x = "Severe thalassaemia births averted per 1,000 couples screened",
-    y = "Incremental costs (THB)"
-  ) +
-  theme_bw(base_size = 18) +
-  theme(legend.position = "none")
-
-if (interactive()) print(psa_plot)
 figure_dir <- here("outputs", "figures")
 dir.create(figure_dir, recursive = TRUE, showWarnings = FALSE)
-ggsave(
-  file.path(figure_dir, "PSA_scatter_plot.png"),
-  psa_plot,
-  width = 10,
-  height = 8,
-  dpi = 350
-)
-
-# Publication-style alternative. The original figure above is retained for
-# direct comparison.
 publication_labels <- c(
   "Strategy 1: Post-conception screening" = "Strategy 1",
   "Strategy 2: Pre-conception screening, targeted DNA" =
@@ -155,16 +78,22 @@ publication_ce <- cost_effectiveness |>
     "% to ", round(probability_high * 100), "%)"
   ))
 
+threshold_descriptions <- c(
+  "Lower bound of the lifetime cost of managing severe thalassaemia:",
+  "Average lifetime cost of managing severe thalassaemia:",
+  "Upper bound of the lifetime cost of managing severe thalassaemia:"
+)
+threshold_labels <- paste(
+  threshold_descriptions,
+  scales::label_number(accuracy = 0.01, big.mark = ",")(
+    c(wtp$low, wtp$base, wtp$high)
+  )
+)
+
 wtp_lines <- data.frame(
   threshold = factor(
-    paste0(
-      c("Lower", "Average", "Upper"), ": ",
-      scales::comma(round(c(wtp$low, wtp$base, wtp$high)))
-    ),
-    levels = paste0(
-      c("Lower", "Average", "Upper"), ": ",
-      scales::comma(round(c(wtp$low, wtp$base, wtp$high)))
-    )
+    threshold_labels,
+    levels = threshold_labels
   ),
   slope = c(wtp$low, wtp$base, wtp$high) / 1000,
   intercept = 0
@@ -192,7 +121,7 @@ publication_plot <- ggplot(
     data = publication_medians,
     aes(x = median_effect_per_1000, y = median_cost, fill = strategy),
     shape = 21,
-    size = 3.2,
+    size = 2.35,
     color = "white",
     stroke = 0.9,
     show.legend = FALSE
@@ -235,12 +164,7 @@ publication_plot <- ggplot(
   coord_cartesian(xlim = c(0, 8), ylim = c(0, 12000)) +
   labs(
     x = "Severe thalassaemia births averted per 1,000 couples screened",
-    y = "Incremental costs (THB)",
-    caption = paste0(
-      "Smaller coloured points represent PSA simulations\n",
-      "Each ellipse encloses the modelled 95% joint uncertainty region\n",
-      "Larger white circles denote median incremental costs and outcomes from the PSA"
-    )
+    y = "Incremental costs (THB)"
   ) +
   theme_classic(base_size = 11) +
   theme(
@@ -257,7 +181,6 @@ publication_plot <- ggplot(
     legend.text = element_text(size = 8.5),
     legend.key.width = unit(22, "pt"),
     legend.margin = margin(t = -2, b = 0),
-    plot.caption = element_text(size = 8.5, hjust = 0, color = "grey25"),
     plot.margin = margin(8, 10, 8, 8)
   )
 
