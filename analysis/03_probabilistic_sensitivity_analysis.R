@@ -115,7 +115,7 @@ psa_plot <- ggplot(
   facet_wrap(~strategy, ncol = 2, labeller = as_labeller(strategy_labels)) +
   labs(
     x = "Severe thalassaemia births averted per 1,000 couples screened",
-    y = "Incremental cost (THB)"
+    y = "Incremental costs (THB)"
   ) +
   theme_bw(base_size = 18) +
   theme(legend.position = "none")
@@ -235,7 +235,7 @@ publication_plot <- ggplot(
   coord_cartesian(xlim = c(0, 8), ylim = c(0, 12000)) +
   labs(
     x = "Severe thalassaemia births averted per 1,000 couples screened",
-    y = "Incremental cost (THB)",
+    y = "Incremental costs (THB)",
     caption = paste0(
       "Smaller coloured points represent PSA simulations\n",
       "Each ellipse encloses the modelled 95% joint uncertainty region\n",
