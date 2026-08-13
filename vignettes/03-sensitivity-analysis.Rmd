@@ -1,5 +1,5 @@
 ---
-title: "Deterministic and probabilistic sensitivity analysis"
+title: "Deterministic and probabilistic sensitivity analyses"
 output: html_document
 ---
 
