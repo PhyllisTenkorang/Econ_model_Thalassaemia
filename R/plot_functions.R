@@ -26,11 +26,7 @@ plot_tornado_labeled <- function(
                    (es[es[,2] == control_label, "Utility"] - es[es[,2] == intervention_label, "Utility"])
 
   plot_data <- dsa |>
-    filter(!Description %in% c(
-      "Probability of man having trait",
-      "Probability of woman having trait",
-      exclude_parameters
-    )) |>
+    filter(!Description %in% exclude_parameters) |>
     mutate(
       low = pmin(outcome.min, outcome.max),
       high = pmax(outcome.min, outcome.max),

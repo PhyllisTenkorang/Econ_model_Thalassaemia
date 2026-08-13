@@ -53,7 +53,7 @@ managing severe thalassaemia. All supported analyses call
 `calculate_wtp_thresholds()` from `R/economic_functions.R`, using:
 
 - 2005 exchange rate: 40.22 THB per USD;
-- inflation adjustment: 166.22 / 111.2;
+- inflation adjustment rate (from 2005 THB to 2024 THB): 166.22 / 111.2;
 - annual discount rate: 3%;
 - time horizon: 30 years; and
 - annual 2005 management costs of USD 224.90, 562.76, and 782.70 for the low,

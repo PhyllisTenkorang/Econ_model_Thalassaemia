@@ -39,7 +39,7 @@ sourcing the extraction script:
 
 ```r
 options(
-  thalassaemia.psa_iterations = 10000L,
+  thalassaemia.psa_iterations = 1000L,
   thalassaemia.psa_seed = 20260804L
 )
 source("analysis/04_extract_uncertainty_results.R")
@@ -56,5 +56,4 @@ source("analysis/04_extract_uncertainty_results.R")
 - `outputs/tables/prevalence_thresholds.csv`
 - `outputs/figures/PSA_scatter_plot_publication.pdf` (publication-quality vector figure)
 - `outputs/figures/PSA_scatter_plot_publication.png` (high-resolution publication figure)
-- `outputs/figures/PSA_scatter_plot.png` (original figure retained for comparison)
 - `outputs/figures/combined_tornado_plots.png`
