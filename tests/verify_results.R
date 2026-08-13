@@ -56,6 +56,14 @@ stopifnot(
   length(unique(psa$strategy)) == 4L,
   all(c("baseline", "median", "lower_95_UI", "upper_95_UI") %in% names(psa))
 )
+strategy_1_effect <- psa[
+  psa$strategy == "Strategy 1: Post-conception screening" &
+    psa$outcome == "Severe thalassaemia births averted",
+]
+stopifnot(
+  nrow(strategy_1_effect) == 1L,
+  strategy_1_effect$lower_95_UI >= -1e-12
+)
 
 prevalence <- read.csv(prevalence_file, check.names = FALSE)
 at_baseline <- prevalence[prevalence$individual_carrier_prevalence == 0.16, ]

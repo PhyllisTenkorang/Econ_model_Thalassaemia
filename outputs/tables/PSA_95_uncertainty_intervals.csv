@@ -1,13 +1,13 @@
 "strategy","outcome","simulations_used","baseline","median","lower_95_UI","upper_95_UI"
-"Strategy 1: Post-conception screening","Incremental cost (THB)",1000,677.300096,670.818391717985,495.847074096311,906.219574772106
-"Strategy 1: Post-conception screening","Severe thalassaemia births averted",1000,0.00198963200000002,0.00190751468067624,-0.000544910826460646,0.00497151167180942
-"Strategy 1: Post-conception screening","ICER (THB per severe thalassaemia birth averted)",1000,340414.758106018,316410.705434234,-1591915.30782927,3550471.71552963
-"Strategy 2: Pre-conception screening, targeted DNA","Incremental cost (THB)",1000,933.6,921.236251526695,646.526285940675,1271.43740922082
-"Strategy 2: Pre-conception screening, targeted DNA","Severe thalassaemia births averted",1000,0.00319999999999998,0.00316284211883894,0.00196205713783451,0.0047562208354976
-"Strategy 2: Pre-conception screening, targeted DNA","ICER (THB per severe thalassaemia birth averted)",1000,291750.000000002,294992.50331702,175959.440843817,481248.128189395
-"Strategy 3: Pre-conception screening, universal DNA","Incremental cost (THB)",1000,6000,5927.8486690891,3906.75047886443,8667.93181383856
-"Strategy 3: Pre-conception screening, universal DNA","Severe thalassaemia births averted",1000,0.00319999999999987,0.00315500711159306,0.00199868297852245,0.0048069441489799
-"Strategy 3: Pre-conception screening, universal DNA","ICER (THB per severe thalassaemia birth averted)",1000,1875000.00000008,1887867.0426808,1038328.46758894,3319073.81272406
-"Strategy 4: Combined screening","Incremental cost (THB)",1000,978.16256,973.435339558433,688.354314988925,1339.37524205093
-"Strategy 4: Combined screening","Severe thalassaemia births averted",1000,0.00444352000000003,0.00436900316031563,0.00287185188868705,0.00634121101429352
-"Strategy 4: Combined screening","ICER (THB per severe thalassaemia birth averted)",1000,220132.363531613,220206.812136757,143947.584323518,366849.763358302
+"Strategy 1: Post-conception screening","Incremental cost (THB)",1000,677.300096,676.923075965437,495.136833800312,894.29558966375
+"Strategy 1: Post-conception screening","Severe thalassaemia births averted",1000,0.00198963200000013,0.00198142948860464,0.0014202015877191,0.00272132732161306
+"Strategy 1: Post-conception screening","ICER (THB per severe thalassaemia birth averted)",1000,340414.758105999,339925.646269069,231895.286943082,491400.38433972
+"Strategy 2: Pre-conception screening, targeted DNA","Incremental cost (THB)",1000,933.6,927.409654528854,650.94223653287,1278.87914964505
+"Strategy 2: Pre-conception screening, targeted DNA","Severe thalassaemia births averted",1000,0.00319999999999998,0.00320491618300017,0.00236195417721842,0.00421551312096924
+"Strategy 2: Pre-conception screening, targeted DNA","ICER (THB per severe thalassaemia birth averted)",1000,291750.000000002,291063.145108456,191996.083913933,432354.769443003
+"Strategy 3: Pre-conception screening, universal DNA","Incremental cost (THB)",1000,6000,6010.57907266739,3964.29120111084,8593.45095275961
+"Strategy 3: Pre-conception screening, universal DNA","Severe thalassaemia births averted",1000,0.00319999999999998,0.00314928197376241,0.00235835016910996,0.00421277008499166
+"Strategy 3: Pre-conception screening, universal DNA","ICER (THB per severe thalassaemia birth averted)",1000,1875000.00000001,1867788.87968168,1128841.55918456,3028708.25608743
+"Strategy 4: Combined screening","Incremental cost (THB)",1000,978.16256,973.016991286687,701.624333113734,1317.25575867303
+"Strategy 4: Combined screening","Severe thalassaemia births averted",1000,0.00444352000000015,0.00441181882148489,0.00355053357822455,0.00560195069138008
+"Strategy 4: Combined screening","ICER (THB per severe thalassaemia birth averted)",1000,220132.363531607,220051.194702303,151723.616766975,317260.697241136

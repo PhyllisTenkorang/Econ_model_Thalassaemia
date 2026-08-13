@@ -22,6 +22,11 @@ baseline_results <- do.call(rbind, lapply(models, evaluate_incremental_results))
 psa_results <- do.call(rbind, lapply(models, run_psa_model, simulations = simulations))
 rownames(psa_results) <- NULL
 
+strategy_1_psa <- psa_results[
+  psa_results$strategy == "Strategy 1: Post-conception screening",
+]
+stopifnot(all(strategy_1_psa$births_averted_proportion >= -1e-12))
+
 wtp <- calculate_wtp_thresholds()
 strategy_labels <- c(
   "Strategy 1: Post-conception screening" = "Strategy 1: Post-conception",
@@ -103,8 +108,8 @@ psa_plot <- ggplot(
   scale_fill_manual(values = strategy_colors, labels = strategy_labels, name = NULL) +
   scale_x_continuous(
     labels = function(x) comma(x * 1000),
-    expand = c(0.002, 0),
-    limits = c(-0.0005, 0.008)
+    expand = expansion(mult = c(0, 0.02)),
+    limits = c(0, 0.008)
   ) +
   scale_y_continuous(labels = label_comma(), expand = c(0, 0), limits = c(0, 12000)) +
   facet_wrap(~strategy, ncol = 2, labeller = as_labeller(strategy_labels)) +
@@ -150,53 +155,6 @@ publication_ce <- cost_effectiveness |>
     "% to ", round(probability_high * 100), "%)"
   ))
 
-# Return the boundary of the smallest kernel-density region containing 95% of
-# the estimated joint distribution of incremental effects and costs.
-kde_hdr_contour <- function(
-  data,
-  probability = 0.95,
-  grid_size = 300L,
-  bandwidth_adjustment = 1.35
-) {
-  x <- data$births_averted_per_1000
-  y <- data$incremental_cost_thb
-  x_padding <- diff(range(x)) * 0.1
-  y_padding <- diff(range(y)) * 0.1
-  density <- MASS::kde2d(
-    x,
-    y,
-    n = grid_size,
-    h = c(
-      MASS::bandwidth.nrd(x),
-      MASS::bandwidth.nrd(y)
-    ) * bandwidth_adjustment,
-    lims = c(
-      min(x) - x_padding, max(x) + x_padding,
-      min(y) - y_padding, max(y) + y_padding
-    )
-  )
-  ordered_density <- sort(as.vector(density$z), decreasing = TRUE)
-  cutoff <- ordered_density[
-    which(cumsum(ordered_density) / sum(ordered_density) >= probability)[1L]
-  ]
-  boundaries <- contourLines(density$x, density$y, density$z, levels = cutoff)
-
-  do.call(rbind, lapply(seq_along(boundaries), function(i) {
-    data.frame(
-      births_averted_per_1000 = boundaries[[i]]$x,
-      incremental_cost_thb = boundaries[[i]]$y,
-      contour_group = paste(data$strategy[[1L]], i, sep = "_"),
-      strategy = data$strategy[[1L]],
-      stringsAsFactors = FALSE
-    )
-  }))
-}
-
-publication_contours <- publication_psa |>
-  group_split(strategy) |>
-  lapply(kde_hdr_contour) |>
-  bind_rows()
-
 wtp_lines <- data.frame(
   threshold = factor(
     paste0(
@@ -223,9 +181,10 @@ publication_plot <- ggplot(
     linewidth = 0.65
   ) +
   geom_point(size = 1.15, alpha = 0.16) +
-  geom_path(
-    data = publication_contours,
-    aes(group = contour_group),
+  stat_ellipse(
+    type = "norm",
+    level = 0.95,
+    segments = 401,
     linewidth = 0.8,
     show.legend = FALSE
   ) +
@@ -263,19 +222,23 @@ publication_plot <- ggplot(
       title.hjust = 0
     )
   ) +
-  scale_x_continuous(breaks = seq(-2, 8, 2), labels = label_number()) +
+  scale_x_continuous(
+    breaks = seq(0, 8, 2),
+    labels = label_number(),
+    expand = expansion(mult = c(0, 0.02))
+  ) +
   scale_y_continuous(
     breaks = seq(0, 12000, 3000),
     labels = label_comma(),
     expand = expansion(mult = c(0.01, 0.03))
   ) +
-  coord_cartesian(xlim = c(-2.5, 8), ylim = c(0, 12000)) +
+  coord_cartesian(xlim = c(0, 8), ylim = c(0, 12000)) +
   labs(
     x = "Severe thalassaemia births averted per 1,000 couples screened",
     y = "Incremental cost (THB)",
     caption = paste0(
       "Smaller coloured points represent PSA simulations\n",
-      "Each contour encloses the 95% joint uncertainty region\n",
+      "Each ellipse encloses the modelled 95% joint uncertainty region\n",
       "Larger white circles denote median incremental costs and outcomes from the PSA"
     )
   ) +

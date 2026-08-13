@@ -17,22 +17,38 @@ beta_parameter <- function(description, alpha, beta, mode, uncertain = TRUE) {
 create_model_parameters <- function(mode = c("base", "dsa", "psa")) {
   mode <- match.arg(mode)
 
-  p_one_partner_trait <- beta_parameter(
-    "Probability of one partner having trait", 268.8, 731.2, mode,
+  woman_trait <- beta_parameter(
+    "Probability of woman having trait", 160, 840, mode,
     uncertain = mode == "psa"
   )
-  p_both_partners_trait <- beta_parameter(
-    "Probability of both partners having trait", 25.6, 974.4, mode,
+  partner_trait <- beta_parameter(
+    "Probability of man having trait", 160, 840, mode,
     uncertain = mode == "psa"
   )
-  p_both_partners_healthy <- if (mode == "psa") {
-    rdecision::ExprModVar$new(
+
+  if (mode == "psa") {
+    p_both_partners_trait <- rdecision::ExprModVar$new(
+      "Probability of both partners having trait",
+      "",
+      rlang::quo(woman_trait * partner_trait)
+    )
+    p_one_partner_trait <- rdecision::ExprModVar$new(
+      "Probability of one partner having trait",
+      "",
+      rlang::quo(
+        woman_trait * (1 - partner_trait) +
+          (1 - woman_trait) * partner_trait
+      )
+    )
+    p_both_partners_healthy <- rdecision::ExprModVar$new(
       "Probability of both partners not having trait",
       "",
-      rlang::quo((1 - p_one_partner_trait) - p_both_partners_trait)
+      rlang::quo((1 - woman_trait) * (1 - partner_trait))
     )
   } else {
-    0.7056
+    p_both_partners_trait <- 0.0256
+    p_one_partner_trait <- 0.2688
+    p_both_partners_healthy <- 0.7056
   }
 
   list(
@@ -47,14 +63,8 @@ create_model_parameters <- function(mode = c("base", "dsa", "psa")) {
       early_presentation = beta_parameter(
         "Probability of early presentation", 80, 20, mode
       ),
-      woman_trait = beta_parameter(
-        "Probability of woman having trait", 160, 840, mode,
-        uncertain = mode == "psa"
-      ),
-      partner_trait = beta_parameter(
-        "Probability of man having trait", 160, 840, mode,
-        uncertain = mode == "psa"
-      ),
+      woman_trait = woman_trait,
+      partner_trait = partner_trait,
       one_partner_trait = p_one_partner_trait,
       both_partners_trait = p_both_partners_trait,
       both_partners_healthy = p_both_partners_healthy,

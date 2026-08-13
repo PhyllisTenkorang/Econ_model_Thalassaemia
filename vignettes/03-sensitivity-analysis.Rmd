@@ -37,7 +37,7 @@ The publication cost-effectiveness plane is saved as
 shows incremental costs and severe thalassaemia births averted per 1,000
 couples screened. Smaller coloured points represent PSA simulations, the
 larger white circle marks the median incremental cost and outcome, and the
-single contour encloses the 95% joint uncertainty region.
+ellipse shows the modelled 95% joint uncertainty region.
 
 The lower, average, and upper cost-effectiveness thresholds are shown as
 reference lines. Each panel reports the probability of being cost-effective
@@ -47,8 +47,7 @@ retained for comparison.
 
 ## Strategy 1 ICER uncertainty
 
-For Strategy 1, the simulated incremental-effect distribution crosses zero.
-Dividing positive incremental costs by effects very close to zero produces very
-large positive or negative ICERs. Its ICER percentile interval should therefore
-be interpreted alongside the cost-effectiveness plane and the separate
-incremental cost and effect distributions.
+Strategy 1 uses the same sampled female and male carrier prevalences to derive
+the carrier-couple probabilities in both arms. This preserves the dependence
+between the screening and no-screening outcomes and prevents screening from
+producing more severe thalassaemia births than no screening in a PSA draw.
