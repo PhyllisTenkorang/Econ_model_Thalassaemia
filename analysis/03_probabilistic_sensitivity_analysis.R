@@ -46,7 +46,7 @@ cost_effectiveness <- psa_results |>
   ) |>
   mutate(
     label = paste0(
-      "Probability cost-effective: ", round(probability * 100),
+      "Probability cost-saving: ", round(probability * 100),
       "% [Range: ", round(probability_low * 100), "% to ",
       round(probability_high * 100), "%]"
     ),
@@ -73,7 +73,7 @@ publication_medians <- medians |>
   mutate(median_effect_per_1000 = median_effect * 1000)
 publication_ce <- cost_effectiveness |>
   mutate(label = paste0(
-    "Probability cost-effective: ", round(probability * 100),
+    "Probability cost-saving: ", round(probability * 100),
     "%  (range: ", round(probability_low * 100),
     "% to ", round(probability_high * 100), "%)"
   ))
