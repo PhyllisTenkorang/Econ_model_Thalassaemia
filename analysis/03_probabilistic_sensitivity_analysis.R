@@ -56,7 +56,7 @@ cost_effectiveness <- psa_results |>
   mutate(
     label = paste0(
       "Probability cost-saving: ", round(probability * 100),
-      "% [Hospital-care scenarios: ",
+      "% [Range: ",
       round(probability_lower_level * 100), "% to ",
       round(probability_higher_level * 100), "%]"
     ),
@@ -84,7 +84,7 @@ publication_medians <- medians |>
 publication_ce <- cost_effectiveness |>
   mutate(label = paste0(
     "Probability cost-saving: ", round(probability * 100),
-    "%  (hospital-care scenarios: ",
+    "%  (range: ",
     round(probability_lower_level * 100),
     "% to ", round(probability_higher_level * 100), "%)"
   ))
@@ -162,7 +162,7 @@ publication_plot <- ggplot(
       c("dotted", "solid", "dashed"),
       levels(management_cost_lines$threshold)
     ),
-    name = "Lifetime management cost thresholds (THB):",
+    name = "Lifetime thalassaemia management costs as thresholds (THB):",
     guide = guide_legend(
       nrow = 3,
       byrow = TRUE,
