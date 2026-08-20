@@ -34,12 +34,12 @@ are required.
 
 ## Reproducible PSA options
 
-The default PSA uses 1,000 simulations and seed 20260804. Override them before
+The default PSA uses 10,000 simulations and seed 20260804. Override them before
 sourcing the extraction script:
 
 ```r
 options(
-  thalassaemia.psa_iterations = 1000L,
+  thalassaemia.psa_iterations = 10000L,
   thalassaemia.psa_seed = 20260804L
 )
 source("analysis/04_extract_uncertainty_results.R")

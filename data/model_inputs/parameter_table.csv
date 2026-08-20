@@ -8,10 +8,9 @@ p_C,Probability of carrier baby,Fixed(0.5),Fixed(0.5),Fixed(0.5),Fixed(0.5)
 p_PND,Probability of couple agreeing to PND,"Beta(58,42)",NA,NA,"Beta(58,42)"
 p_T,Probability of severe thalassaemia baby,Fixed(0.25),Fixed(0.25),Fixed(0.25),Fixed(0.25)
 p_abortion,Probability of couple agreeing to abortion,"Beta(67,33)",NA,NA,"Beta(67,33)"
-p_female_trait,Female carrier prevalence (assumed precision),"Beta(160,840)","Beta(160,840)","Beta(160,840)","Beta(160,840)"
-p_male_trait,Male carrier prevalence (assumed precision),"Beta(160,840)","Beta(160,840)","Beta(160,840)","Beta(160,840)"
-p_both_partners_healthy,Probability both partners not having trait,Derived((1 - p_female_trait) * (1 - p_male_trait)),Derived((1 - p_female_trait) * (1 - p_male_trait)),Derived((1 - p_female_trait) * (1 - p_male_trait)),Derived((1 - p_female_trait) * (1 - p_male_trait))
-p_both_partners_trait,Probability of both partners having trait,Derived(p_female_trait * p_male_trait),Derived(p_female_trait * p_male_trait),Derived(p_female_trait * p_male_trait),Derived(p_female_trait * p_male_trait)
+p_carrier_prevalence,Individual carrier prevalence (assumed precision),"Beta(160,840)","Beta(160,840)","Beta(160,840)","Beta(160,840)"
+p_both_partners_healthy,Probability both partners not having trait,Derived((1 - p_carrier_prevalence)^2),Derived((1 - p_carrier_prevalence)^2),Derived((1 - p_carrier_prevalence)^2),Derived((1 - p_carrier_prevalence)^2)
+p_both_partners_trait,Probability of both partners having trait,Derived(p_carrier_prevalence^2),Derived(p_carrier_prevalence^2),Derived(p_carrier_prevalence^2),Derived(p_carrier_prevalence^2)
 p_early_presentation,Probability of early presentation,"Beta(80,20)",NA,NA,NA
-p_one_partner_trait,Probability of one partner having trait,Derived(p_female_trait * (1 - p_male_trait) + (1 - p_female_trait) * p_male_trait),Derived(p_female_trait * (1 - p_male_trait) + (1 - p_female_trait) * p_male_trait),Derived(p_female_trait * (1 - p_male_trait) + (1 - p_female_trait) * p_male_trait),Derived(p_female_trait * (1 - p_male_trait) + (1 - p_female_trait) * p_male_trait)
+p_one_partner_trait,Probability of one partner having trait,Derived(2 * p_carrier_prevalence * (1 - p_carrier_prevalence)),Derived(2 * p_carrier_prevalence * (1 - p_carrier_prevalence)),Derived(2 * p_carrier_prevalence * (1 - p_carrier_prevalence)),Derived(2 * p_carrier_prevalence * (1 - p_carrier_prevalence))
 p_reconsideration,Probability of reconsidering decision,NA,"Beta(50,50)","Beta(50,50)","Beta(50,50)"

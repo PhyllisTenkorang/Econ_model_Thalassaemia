@@ -31,11 +31,12 @@ The PSA output reports, for incremental cost, births averted, and the ICER:
 
 Births averted are retained as proportions in the CSV output.
 
-Female and male carrier prevalences are sampled independently because their
-16% point estimates came from separate literature sources. Because those
-sources did not report sample sizes or measures of precision, each prevalence
-is assigned an assumed `Beta(160, 840)` distribution, consistent with the
-simplified Beta parameterisation used for model probabilities.
+The female and male carrier-prevalence point estimates were both 16%. Within
+each PSA simulation, one shared individual prevalence is sampled from an
+assumed `Beta(160, 840)` distribution and applied to both partners. Couple
+probabilities are then derived as \(p^2\), \(2p(1-p)\), and \((1-p)^2\). The
+Beta precision is a simplifying assumption because the literature sources did
+not report sample sizes or measures of uncertainty.
 
 ## Benefit-cost ratios
 

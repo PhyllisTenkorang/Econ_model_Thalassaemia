@@ -12,7 +12,7 @@ source(here("R", "model_builders.R"))
 source(here("R", "analysis_functions.R"))
 
 set.seed(getOption("thalassaemia.psa_seed", 20260804L))
-simulations <- as.integer(getOption("thalassaemia.psa_iterations", 1000L))
+simulations <- as.integer(getOption("thalassaemia.psa_iterations", 10000L))
 
 models <- build_all_strategy_trees(
   mode = "psa",
@@ -162,7 +162,7 @@ publication_plot <- ggplot(
       c("dotted", "solid", "dashed"),
       levels(management_cost_lines$threshold)
     ),
-    name = "Lifetime management-cost thresholds (THB):",
+    name = "Lifetime management cost thresholds (THB):",
     guide = guide_legend(
       nrow = 3,
       byrow = TRUE,

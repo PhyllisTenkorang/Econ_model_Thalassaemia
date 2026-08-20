@@ -1,6 +1,14 @@
 library(here)
 
 source(here("R", "economic_functions.R"))
+library(rdecision)
+source(here("R", "model_parameters.R"))
+
+psa_parameters <- create_model_parameters("psa")
+stopifnot(identical(
+  psa_parameters$probabilities$woman_trait,
+  psa_parameters$probabilities$partner_trait
+))
 
 management_cost_thresholds <- calculate_management_cost_thresholds()
 legacy_thresholds <- calculate_wtp_thresholds()
@@ -76,7 +84,8 @@ psa <- read.csv(psa_file, check.names = FALSE)
 stopifnot(
   nrow(psa) == 12L,
   length(unique(psa$strategy)) == 4L,
-  all(c("baseline", "median", "lower_95_UI", "upper_95_UI") %in% names(psa))
+  all(c("baseline", "median", "lower_95_UI", "upper_95_UI") %in% names(psa)),
+  all(psa$simulations_used == 10000L)
 )
 strategy_1_effect <- psa[
   psa$strategy == "Strategy 1: Post-conception screening" &
@@ -100,7 +109,7 @@ stopifnot(
   length(unique(bcr$strategy)) == 4L,
   length(unique(bcr$management_cost_scenario)) == 3L,
   all(required_bcr_columns %in% names(bcr)),
-  all(bcr$simulations == 1000L),
+  all(bcr$simulations == 10000L),
   all(is.finite(bcr$base_case_bcr)),
   all(bcr$base_case_bcr > 0),
   all(bcr$lower_bcr_95_UI <= bcr$median_bcr),

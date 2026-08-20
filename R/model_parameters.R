@@ -17,12 +17,8 @@ beta_parameter <- function(description, alpha, beta, mode, uncertain = TRUE) {
 create_model_parameters <- function(mode = c("base", "dsa", "psa")) {
   mode <- match.arg(mode)
 
-  woman_trait <- beta_parameter(
-    "Probability of woman having trait", 160, 840, mode,
-    uncertain = mode == "psa"
-  )
-  partner_trait <- beta_parameter(
-    "Probability of man having trait", 160, 840, mode,
+  carrier_prevalence <- beta_parameter(
+    "Individual carrier prevalence", 160, 840, mode,
     uncertain = mode == "psa"
   )
 
@@ -30,20 +26,17 @@ create_model_parameters <- function(mode = c("base", "dsa", "psa")) {
     p_both_partners_trait <- rdecision::ExprModVar$new(
       "Probability of both partners having trait",
       "",
-      rlang::quo(woman_trait * partner_trait)
+      rlang::quo(carrier_prevalence^2)
     )
     p_one_partner_trait <- rdecision::ExprModVar$new(
       "Probability of one partner having trait",
       "",
-      rlang::quo(
-        woman_trait * (1 - partner_trait) +
-          (1 - woman_trait) * partner_trait
-      )
+      rlang::quo(2 * carrier_prevalence * (1 - carrier_prevalence))
     )
     p_both_partners_healthy <- rdecision::ExprModVar$new(
       "Probability of both partners not having trait",
       "",
-      rlang::quo((1 - woman_trait) * (1 - partner_trait))
+      rlang::quo((1 - carrier_prevalence)^2)
     )
   } else {
     p_both_partners_trait <- 0.0256
@@ -63,8 +56,8 @@ create_model_parameters <- function(mode = c("base", "dsa", "psa")) {
       early_presentation = beta_parameter(
         "Probability of early presentation", 80, 20, mode
       ),
-      woman_trait = woman_trait,
-      partner_trait = partner_trait,
+      woman_trait = carrier_prevalence,
+      partner_trait = carrier_prevalence,
       one_partner_trait = p_one_partner_trait,
       both_partners_trait = p_both_partners_trait,
       both_partners_healthy = p_both_partners_healthy,
