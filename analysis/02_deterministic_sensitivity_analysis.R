@@ -17,7 +17,7 @@ models <- build_all_strategy_trees(
   mode = "dsa",
   data_dir = here("data", "model_inputs")
 )
-wtp <- calculate_wtp_thresholds()
+management_cost_thresholds <- calculate_management_cost_thresholds()
 
 plot_specs <- list(
   list(
@@ -110,19 +110,23 @@ threshold_specs$threshold <- vapply(seq_len(nrow(threshold_specs)), function(i) 
     parameter = threshold_specs$parameter[[i]],
     lower = threshold_specs$lower[[i]],
     upper = threshold_specs$upper[[i]],
-    lambda = wtp$base,
+    lambda = management_cost_thresholds$average,
     tol = if (threshold_specs$strategy_id[[i]] == 4L && i == 10L) 1e-8 else 0.01
   )
   if (length(result) == 0L || !is.finite(result[[1L]])) NA_real_ else result[[1L]]
 }, numeric(1L))
 threshold_specs$strategy <- strategy_metadata$strategy[threshold_specs$strategy_id]
-threshold_specs$wtp_base_thb <- wtp$base
+threshold_specs$average_lifetime_management_cost_thb <-
+  management_cost_thresholds$average
 
 table_dir <- here("outputs", "tables")
 dir.create(table_dir, recursive = TRUE, showWarnings = FALSE)
 write.csv(dsa_bounds, file.path(table_dir, "DSA_parameter_bounds.csv"), row.names = FALSE)
 write.csv(
-  threshold_specs[c("strategy", "parameter", "lower", "upper", "wtp_base_thb", "threshold")],
+  threshold_specs[c(
+    "strategy", "parameter", "lower", "upper",
+    "average_lifetime_management_cost_thb", "threshold"
+  )],
   file.path(table_dir, "DSA_thresholds.csv"),
   row.names = FALSE
 )

@@ -41,7 +41,7 @@ source("analysis/06_prevalence_analysis.R")
 At \(p=0.16\), the script verifies that all four incremental costs and effects
 equal the main deterministic base-case results.
 
-## Cost-effectiveness thresholds
+## Lifetime management-cost thresholds
 
 For each strategy, the prevalence threshold is the individual carrier
 prevalence at which:
@@ -50,8 +50,10 @@ prevalence at which:
 \frac{\Delta C(p)}{\Delta E(p)} = \lambda,
 \]
 
-where \(\lambda\) is the same base WTP threshold returned by
-`calculate_wtp_thresholds()` and used by the DSA and PSA.
+where \(\lambda\) is the average discounted lifetime management-cost threshold
+returned by `calculate_management_cost_thresholds()` and used by the DSA and
+PSA. It represents direct medical costs avoided from the healthcare payer
+perspective rather than willingness to pay for a health outcome.
 
 Outputs are saved to:
 

@@ -9,7 +9,8 @@ thalassaemia screening strategies in Thailand against "no screening":
 4. Combined pre- and post-conception screening
 
 The primary outcome is the incremental screening cost per severe thalassaemia
-birth averted (in Thai Baht).
+birth averted (in Thai Baht). The analysis also reports healthcare cost-offset
+benefit-cost ratios and net cost savings under three hospital-care scenarios.
 
 ## Quick start
 

@@ -22,7 +22,9 @@ The model reports:
 
 - incremental cost in THB;
 - the proportion of severe thalassaemia births averted; and
-- the ICER in THB per severe thalassaemia birth averted.
+- the ICER in THB per severe thalassaemia birth averted;
+- the healthcare cost-offset benefit-cost ratio; and
+- incremental net cost savings from the healthcare payer perspective.
 
 The deterministic base-case results are written to
 `outputs/tables/base_case_results.csv`.
@@ -46,15 +48,23 @@ and
 P(\text{neither carrier}) = (1-p)^2 = 0.7056.
 \]
 
-## Willingness-to-pay definition
+## Lifetime management-cost thresholds
 
-The cost-effectiveness threshold represents the discounted lifetime cost of
-managing severe thalassaemia. All supported analyses call
-`calculate_wtp_thresholds()` from `R/economic_functions.R`, using:
+The thresholds represent the discounted direct medical cost of managing severe
+thalassaemia from the healthcare payer perspective. They are healthcare
+cost-offset thresholds, not willingness-to-pay thresholds. All supported
+analyses call `calculate_management_cost_thresholds()` from
+`R/economic_functions.R`, using:
 
 - 2005 exchange rate: 40.22 THB per USD;
 - inflation adjustment rate (from 2005 THB to 2024 THB): 166.22 / 111.2;
 - annual discount rate: 3%;
-- time horizon: 30 years; and
-- annual 2005 management costs of USD 224.90, 562.76, and 782.70 for the low,
-  base, and high thresholds.
+- time horizon: 30 years, representing assumed average life expectancy; and
+- annual 2005 management costs of USD 224.90, 562.76, and 782.70 for
+  lower-level hospital care, average care, and higher-level hospital care.
+
+Screening costs are expressed in 2025 THB and management costs in 2024 THB,
+the latest year supported by the GDP deflator used in the analysis. The one-year
+difference is treated as immaterial, so both are compared without further
+adjustment. The hospital-level values are scenarios rather than statistical
+uncertainty bounds.

@@ -14,13 +14,19 @@ calculate_lifetime_cost <- function(cost_usd_2005, exchange_rate_2005, inflation
   return(lifetime_cost)
 }
 
-# WTP thresholds used consistently across the main economic model.
-calculate_wtp_thresholds <- function(
+# Discounted lifetime management-cost thresholds used consistently across the
+# main economic model. These are healthcare cost-offset thresholds, not
+# willingness-to-pay thresholds.
+calculate_management_cost_thresholds <- function(
   exchange_rate_2005 = 40.22,
   inflation_rate_thb = 166.22 / 111.2,
   discount_rate = 0.03,
   years = 30L,
-  annual_cost_usd_2005 = c(low = 224.90, base = 562.76, high = 782.70)
+  annual_cost_usd_2005 = c(
+    lower_level = 224.90,
+    average = 562.76,
+    higher_level = 782.70
+  )
 ) {
   values <- vapply(
     annual_cost_usd_2005,
@@ -33,4 +39,15 @@ calculate_wtp_thresholds <- function(
   )
 
   as.list(values)
+}
+
+# Backward-compatible alias for code written before the management-cost
+# terminology was adopted. New analyses should call
+# calculate_management_cost_thresholds().
+calculate_wtp_thresholds <- function(...) {
+  values <- unlist(
+    calculate_management_cost_thresholds(...),
+    use.names = FALSE
+  )
+  as.list(stats::setNames(values, c("low", "base", "high")))
 }

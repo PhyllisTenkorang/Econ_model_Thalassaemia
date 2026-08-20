@@ -23,7 +23,7 @@ probabilities <- c(
   severe_birth = 0.25
 )
 
-wtp <- calculate_wtp_thresholds()
+management_cost_thresholds <- calculate_management_cost_thresholds()
 
 evaluate_prevalence <- function(p) {
   stopifnot(is.numeric(p), length(p) == 1L, p > 0, p < 1)
@@ -87,8 +87,10 @@ evaluate_prevalence <- function(p) {
     incremental_cost_thb = incremental_cost,
     births_averted_proportion = births_averted,
     icer_thb_per_birth_averted = incremental_cost / births_averted,
-    net_monetary_benefit_thb = wtp$base * births_averted - incremental_cost,
-    cost_effective_at_base_wtp = wtp$base * births_averted >= incremental_cost,
+    net_cost_saving_thb =
+      management_cost_thresholds$average * births_averted - incremental_cost,
+    cost_saving_at_average_management_cost =
+      management_cost_thresholds$average * births_averted >= incremental_cost,
     stringsAsFactors = FALSE
   )
 }
@@ -103,7 +105,8 @@ rownames(prevalence_results) <- NULL
 find_threshold <- function(strategy_name, interval = c(0.001, 0.50)) {
   objective <- function(p) {
     result <- evaluate_prevalence(p)
-    result$icer_thb_per_birth_averted[result$strategy == strategy_name] - wtp$base
+    result$icer_thb_per_birth_averted[result$strategy == strategy_name] -
+      management_cost_thresholds$average
   }
 
   endpoint_values <- vapply(interval, objective, numeric(1L))
@@ -120,7 +123,8 @@ prevalence_thresholds <- data.frame(
   strategy = strategies,
   individual_carrier_prevalence_threshold = unname(thresholds),
   both_carriers_probability_at_threshold = unname(thresholds)^2,
-  wtp_base_thb = wtp$base,
+  average_lifetime_management_cost_thb =
+    management_cost_thresholds$average,
   stringsAsFactors = FALSE
 )
 

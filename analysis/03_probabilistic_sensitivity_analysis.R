@@ -27,7 +27,7 @@ strategy_1_psa <- psa_results[
 ]
 stopifnot(all(strategy_1_psa$births_averted_proportion >= -1e-12))
 
-wtp <- calculate_wtp_thresholds()
+management_cost_thresholds <- calculate_management_cost_thresholds()
 medians <- psa_results |>
   group_by(strategy) |>
   summarise(
@@ -39,16 +39,26 @@ medians <- psa_results |>
 cost_effectiveness <- psa_results |>
   group_by(strategy) |>
   summarise(
-    probability = mean(incremental_cost_thb < wtp$base * births_averted_proportion),
-    probability_low = mean(incremental_cost_thb < wtp$low * births_averted_proportion),
-    probability_high = mean(incremental_cost_thb < wtp$high * births_averted_proportion),
+    probability = mean(
+      incremental_cost_thb <
+        management_cost_thresholds$average * births_averted_proportion
+    ),
+    probability_lower_level = mean(
+      incremental_cost_thb <
+        management_cost_thresholds$lower_level * births_averted_proportion
+    ),
+    probability_higher_level = mean(
+      incremental_cost_thb <
+        management_cost_thresholds$higher_level * births_averted_proportion
+    ),
     .groups = "drop"
   ) |>
   mutate(
     label = paste0(
       "Probability cost-saving: ", round(probability * 100),
-      "% [Range: ", round(probability_low * 100), "% to ",
-      round(probability_high * 100), "%]"
+      "% [Hospital-care scenarios: ",
+      round(probability_lower_level * 100), "% to ",
+      round(probability_higher_level * 100), "%]"
     ),
     x = -Inf,
     y = Inf
@@ -74,28 +84,37 @@ publication_medians <- medians |>
 publication_ce <- cost_effectiveness |>
   mutate(label = paste0(
     "Probability cost-saving: ", round(probability * 100),
-    "%  (range: ", round(probability_low * 100),
-    "% to ", round(probability_high * 100), "%)"
+    "%  (hospital-care scenarios: ",
+    round(probability_lower_level * 100),
+    "% to ", round(probability_higher_level * 100), "%)"
   ))
 
 threshold_descriptions <- c(
-  "Lower bound of the lifetime cost of managing severe thalassaemia:",
+  "Lower-level hospital care:",
   "Average lifetime cost of managing severe thalassaemia:",
-  "Upper bound of the lifetime cost of managing severe thalassaemia:"
+  "Higher-level hospital care:"
 )
 threshold_labels <- paste(
   threshold_descriptions,
   scales::label_number(accuracy = 0.01, big.mark = ",")(
-    c(wtp$low, wtp$base, wtp$high)
+    c(
+      management_cost_thresholds$lower_level,
+      management_cost_thresholds$average,
+      management_cost_thresholds$higher_level
+    )
   )
 )
 
-wtp_lines <- data.frame(
+management_cost_lines <- data.frame(
   threshold = factor(
     threshold_labels,
     levels = threshold_labels
   ),
-  slope = c(wtp$low, wtp$base, wtp$high) / 1000,
+  slope = c(
+    management_cost_thresholds$lower_level,
+    management_cost_thresholds$average,
+    management_cost_thresholds$higher_level
+  ) / 1000,
   intercept = 0
 )
 
@@ -104,7 +123,7 @@ publication_plot <- ggplot(
   aes(x = births_averted_per_1000, y = incremental_cost_thb, color = strategy)
 ) +
   geom_abline(
-    data = wtp_lines,
+    data = management_cost_lines,
     aes(slope = slope, intercept = intercept, linetype = threshold),
     color = "grey30",
     linewidth = 0.65
@@ -141,9 +160,9 @@ publication_plot <- ggplot(
   scale_linetype_manual(
     values = setNames(
       c("dotted", "solid", "dashed"),
-      levels(wtp_lines$threshold)
+      levels(management_cost_lines$threshold)
     ),
-    name = "Cost-effectiveness thresholds (THB):",
+    name = "Lifetime management-cost thresholds (THB):",
     guide = guide_legend(
       nrow = 3,
       byrow = TRUE,

@@ -1,4 +1,4 @@
-"individual_carrier_prevalence","both_carriers_probability","one_carrier_probability","neither_carrier_probability","strategy","incremental_cost_thb","births_averted_proportion","icer_thb_per_birth_averted","net_monetary_benefit_thb","cost_effective_at_base_wtp"
+"individual_carrier_prevalence","both_carriers_probability","one_carrier_probability","neither_carrier_probability","strategy","incremental_cost_thb","births_averted_proportion","icer_thb_per_birth_averted","net_cost_saving_thb","cost_saving_at_average_management_cost"
 0.01,1e-04,0.0198,0.9801,"Strategy 1: Post-conception screening",394.778516,7.772e-06,50794971.1785898,-389.469920370249,FALSE
 0.01,1e-04,0.0198,0.9801,"Strategy 2: Pre-conception screening, targeted DNA",780.6,1.25e-05,62448000,-772.061985927446,FALSE
 0.01,1e-04,0.0198,0.9801,"Strategy 3: Pre-conception screening, universal DNA",6000,1.25e-05,4.8e+08,-5991.46198592745,FALSE

@@ -1,4 +1,4 @@
-"strategy","individual_carrier_prevalence_threshold","both_carriers_probability_at_threshold","wtp_base_thb"
+"strategy","individual_carrier_prevalence_threshold","both_carriers_probability_at_threshold","average_lifetime_management_cost_thb"
 "Strategy 1: Post-conception screening",0.098334285578508,0.00966963172023557,683041.125804335
 "Strategy 2: Pre-conception screening, targeted DNA",0.0991299290649316,0.00982674283641837,683041.125804335
 "Strategy 3: Pre-conception screening, universal DNA",0.265092218881894,0.0702738845117261,683041.125804335

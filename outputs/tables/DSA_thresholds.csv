@@ -1,4 +1,4 @@
-"strategy","parameter","lower","upper","wtp_base_thb","threshold"
+"strategy","parameter","lower","upper","average_lifetime_management_cost_thb","threshold"
 "Strategy 1: Post-conception screening","CBC & Hb typing cost per person",50,1000,683041.125804335,977.669143676758
 "Strategy 1: Post-conception screening","Probability of couple agreeing to PND",0.1,0.9,683041.125804335,0.26875
 "Strategy 1: Post-conception screening","Probability of couple agreeing to abortion",0.1,0.9,683041.125804335,0.33125

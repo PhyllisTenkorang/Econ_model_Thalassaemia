@@ -6,6 +6,7 @@ library(rdecision)
 source(here("R", "model_parameters.R"))
 source(here("R", "model_builders.R"))
 source(here("R", "analysis_functions.R"))
+source(here("R", "economic_functions.R"))
 
 # This creates `models`, `baseline_results`, and `psa_results` using the
 # reproducible seed and simulation count configured by the PSA script.
@@ -13,6 +14,12 @@ source(here("analysis", "03_probabilistic_sensitivity_analysis.R"))
 
 psa_intervals <- summarise_psa_results(psa_results, baseline_results)
 rownames(psa_intervals) <- NULL
+bcr_results <- summarise_bcr_results(
+  psa_results,
+  baseline_results,
+  calculate_management_cost_thresholds()
+)
+rownames(bcr_results) <- NULL
 
 dsa_models <- build_all_strategy_trees(
   mode = "dsa",
@@ -34,6 +41,12 @@ write.csv(
   file.path(output_dir, "PSA_95_uncertainty_intervals.csv"),
   row.names = FALSE
 )
+write.csv(
+  bcr_results,
+  file.path(output_dir, "BCR_PSA_results.csv"),
+  row.names = FALSE
+)
 
 print(dsa_bounds, row.names = FALSE)
 print(psa_intervals, row.names = FALSE)
+print(bcr_results, row.names = FALSE)
