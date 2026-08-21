@@ -33,42 +33,6 @@ sources did not report sample sizes or measures of uncertainty. Other uncertain
 probabilities use Beta distributions, and uncertain costs use Gamma
 distributions.
 
-## Economic outcomes
-
-For each strategy, the model estimates:
-
-- Incremental screening cost
-- Severe thalassaemia births averted
-- Incremental cost-effectiveness ratio in THB per severe birth averted
-- Benefit-cost ratio and its 95% probabilistic uncertainty interval
-- Probability that the BCR exceeds one
-- Incremental net cost saving
-- Budget impact at alternative coverage levels
-- Carrier prevalence and parameter thresholds
-
-For PSA simulation $s$ and management cost scenario $j$:
-
-$$
-BCR_{s,j}=\frac{M_j\Delta E_s}{\Delta C_s}
-$$
-
-where $M_j$ is the discounted lifetime management cost, $\Delta E_s$ is
-the proportion of severe births averted, and $\Delta C_s$ is the incremental
-screening cost. A BCR greater than one means that expected direct medical
-management costs avoided exceed incremental screening costs.
-
-Three lifetime management cost scenarios are evaluated:
-
-| Scenario | Discounted lifetime cost (THB) |
-|---|---:|
-| Care at lower level hospitals | 272,968.85 |
-| Average hospital care | 683,041.13 |
-| Care at higher level hospitals | 949,989.85 |
-
-These values represent hospital care scenarios rather than statistical
-confidence limits. Consequently, each BCR uncertainty interval is conditional
-on its specified management cost scenario.
-
 ## Quick start
 
 Open `Econ_Model_Thalassaemia.Rproj`, install the packages listed in the
@@ -97,28 +61,6 @@ options(
 )
 source("analysis/04_extract_uncertainty_results.R")
 ```
-
-## Principal outputs
-
-### Tables
-
-- [Base case results](outputs/tables/base_case_results.csv)
-- [DSA parameter bounds](outputs/tables/DSA_parameter_bounds.csv)
-- [DSA thresholds](outputs/tables/DSA_thresholds.csv)
-- [PSA uncertainty intervals](outputs/tables/PSA_95_uncertainty_intervals.csv)
-- [BCR and net cost saving results](outputs/tables/BCR_PSA_results.csv)
-- [Budget impact results](outputs/tables/budget_impact_results.csv)
-- [Carrier prevalence results](outputs/tables/prevalence_analysis_results.csv)
-- [Carrier prevalence thresholds](outputs/tables/prevalence_thresholds.csv)
-
-### Figures
-
-- [PSA publication figure (PDF)](outputs/figures/PSA_scatter_plot_publication.pdf)
-- [PSA publication figure (PNG)](outputs/figures/PSA_scatter_plot_publication.png)
-- [Combined tornado plots (PDF)](outputs/figures/combined_tornado_plots.pdf)
-- [Combined tornado plots (PNG)](outputs/figures/combined_tornado_plots.png)
-
-![Probabilistic sensitivity analysis by screening strategy](outputs/figures/PSA_scatter_plot_publication.png)
 
 ## Project structure
 
