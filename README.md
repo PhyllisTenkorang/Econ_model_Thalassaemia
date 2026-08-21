@@ -16,9 +16,6 @@ and carrier prevalence threshold analyses are also provided.
 ## Analytical perspective and assumptions
 
 - **Perspective:** Healthcare payer; only direct medical costs are included.
-- **Price year for screening costs:** 2025 THB.
-- **Price year for management costs:** 2024 THB, treated as comparable with 2025 THB
-  because a 2025 Thai GDP deflator was unavailable.
 - **Life expectancy:** 30 years for patients with severe thalassaemia.
 - **Discount rate:** 3% annually for future management costs.
 - **Individual carrier prevalence:** 16% in the base case.
