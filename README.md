@@ -16,7 +16,6 @@ and carrier prevalence threshold analyses are also provided.
 ## Analytical perspective and assumptions
 
 - **Perspective:** Healthcare payer; only direct medical costs are included.
-- **Comparator:** No screening.
 - **Price year for screening costs:** 2025 THB.
 - **Price year for management costs:** 2024 THB, treated as comparable with 2025 THB
   because a 2025 Thai GDP deflator was unavailable.
@@ -26,12 +25,6 @@ and carrier prevalence threshold analyses are also provided.
 - **PSA carrier prevalence:** One shared `Beta(160, 840)` draw is applied to
   both partners within each simulation. Couple probabilities are derived as
   $p^2$, $2p(1-p)$, and $(1-p)^2$.
-- **Default PSA:** 10,000 simulations with seed `20260804`.
-
-The Beta precision is a simplifying assumption because the carrier prevalence
-sources did not report sample sizes or measures of uncertainty. Other uncertain
-probabilities use Beta distributions, and uncertain costs use Gamma
-distributions.
 
 ## Quick start
 
