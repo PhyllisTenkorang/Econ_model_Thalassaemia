@@ -63,8 +63,8 @@ analyses call `calculate_management_cost_thresholds()` from
 - annual 2005 management costs of USD 224.90, 562.76, and 782.70 for
   lower-level hospital care, average care, and higher-level hospital care.
 
-Screening costs are expressed in 2025 THB and management costs in 2024 THB,
-the latest year supported by the GDP deflator used in the analysis. The one-year
-difference is treated as immaterial, so both are compared without further
-adjustment. The hospital-level values are scenarios rather than statistical
-uncertainty bounds.
+Screening costs are expressed in 2025 THB, whereas lifetime management costs
+were adjusted for inflation to 2024 THB using the most recent GDP deflator for
+Thailand available from the World Bank. The one-year difference is treated as
+immaterial, so both are compared without further adjustment. The hospital-level
+values are scenarios rather than statistical uncertainty bounds.
