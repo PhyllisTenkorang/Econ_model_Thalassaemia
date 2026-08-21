@@ -35,6 +35,7 @@ workflow from the repository root:
 ```sh
 Rscript analysis/01_baseline_analysis.R
 Rscript analysis/02_deterministic_sensitivity_analysis.R
+Rscript analysis/03_probabilistic_sensitivity_analysis.R
 Rscript analysis/04_extract_uncertainty_results.R
 Rscript analysis/05_budget_impact_analysis.R
 Rscript analysis/06_prevalence_analysis.R
