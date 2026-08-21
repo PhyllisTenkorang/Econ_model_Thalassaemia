@@ -41,20 +41,6 @@ Rscript analysis/06_prevalence_analysis.R
 Rscript tests/verify_results.R
 ```
 
-`04_extract_uncertainty_results.R` runs the PSA internally by sourcing
-`03_probabilistic_sensitivity_analysis.R`; running both scripts separately is
-therefore unnecessary when producing the complete results.
-
-To override the default PSA settings:
-
-```r
-options(
-  thalassaemia.psa_iterations = 10000L,
-  thalassaemia.psa_seed = 20260804L
-)
-source("analysis/04_extract_uncertainty_results.R")
-```
-
 ## Project structure
 
 ```text
