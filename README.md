@@ -1,12 +1,12 @@
 # Economic model of thalassaemia screening strategies in Thailand
 
-This repository contains an economic decision tree model evaluating four
+This repository contains decision tree models evaluating four
 thalassaemia screening strategies in Thailand against **no screening**:
 
-1. Postconception screening
-2. Preconception screening using CBC and Hb typing with targeted DNA analysis
-3. Preconception screening using universal DNA analysis
-4. Combined preconception and postconception screening
+1. Post-conception screening
+2. Pre-conception screening using CBC and Hb typing with targeted DNA analysis
+3. Pre-conception screening using universal DNA analysis
+4. Combined pre-conception and post-conception screening
 
 The primary outcome is the incremental screening cost in Thai Baht (THB) per
 severe thalassaemia birth averted. The analysis also reports benefit-cost
@@ -62,7 +62,7 @@ model specification.
 
 - [Model overview](vignettes/01-model-overview.Rmd)
 - [Running the analyses](vignettes/02-running-analyses.Rmd)
-- [Deterministic and probabilistic sensitivity analysis](vignettes/03-sensitivity-analysis.Rmd)
+- [Deterministic and probabilistic sensitivity analyses](vignettes/03-sensitivity-analysis.Rmd)
 - [Carrier prevalence analysis](vignettes/04-prevalence-analysis.Rmd)
 
 Run `Rscript tests/verify_results.R` after regenerating outputs. The checks
