@@ -13,6 +13,19 @@ severe thalassaemia birth averted. The analysis also reports benefit-cost
 ratios and net cost savings under three hospital care scenarios. Budget impact
 and carrier prevalence threshold analyses are also provided.
 
+## Publication
+
+This repository contains the model code and analyses accompanying:
+
+Tenkorang P, Wongnak P, Kiatpakdee B, Paiboonsukwong K, Nasir N,
+Atuire C, Painter C, Pan-ngum W.
+**Economic Evaluation of Screening Strategies for Thalassaemia
+Prevention: A Case Study From Thailand.**
+*International Journal of Health Policy and Management*.
+[Read the article](https://doi.org/10.34172/ijhpm.9851).
+
+Please cite this article when using or adapting the model or analyses.
+
 ## Analytical perspective and assumptions
 
 - **Perspective:** Healthcare payer; only direct medical costs are included.

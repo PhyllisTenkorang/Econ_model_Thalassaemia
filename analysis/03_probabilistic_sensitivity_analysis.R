@@ -213,6 +213,16 @@ ggsave(
   bg = "white"
 )
 ggsave(
+  file.path(figure_dir, "PSA_scatter_plot_publication.tiff"),
+  publication_plot,
+  width = 180,
+  height = 155,
+  units = "mm",
+  dpi = 600,
+  compression = "lzw",
+  bg = "white"
+)
+ggsave(
   file.path(figure_dir, "PSA_scatter_plot_publication.pdf"),
   publication_plot,
   width = 180,
