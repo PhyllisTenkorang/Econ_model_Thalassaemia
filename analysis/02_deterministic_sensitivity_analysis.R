@@ -79,6 +79,18 @@ ggsave(
   bg = "white"
 )
 
+# Lossless, high-resolution TIFF for journal submission.
+ggsave(
+  file.path(figure_dir, "combined_tornado_plots.tiff"),
+  combined_tornado,
+  width = 14,
+  height = 11,
+  units = "in",
+  dpi = 600,
+  compression = "lzw",
+  bg = "white"
+)
+
 dsa_bounds <- do.call(rbind, lapply(models, extract_dsa_bounds))
 dsa_bounds <- dsa_bounds[order(dsa_bounds$strategy, dsa_bounds$parameter), ]
 rownames(dsa_bounds) <- NULL
